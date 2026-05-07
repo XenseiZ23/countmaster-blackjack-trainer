@@ -372,7 +372,7 @@ export default function App() {
               <button 
                 onClick={() => setShowSettings(false)}
                 className="absolute -top-6 -right-6 p-4 text-neutral-500 hover:text-white transition-colors"
-                title="Cerrar Configuración"
+                title="Cerrar Ajustes"
               >
                 <XCircle size={32} />
               </button>
@@ -388,10 +388,10 @@ export default function App() {
             </div>
 
             <h1 className="text-5xl font-black tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent uppercase italic">
-              Configuración
+              Ajustes
             </h1>
             <p className="text-neutral-400 font-medium max-w-sm mx-auto">
-              {showSettings ? 'Modifica los parámetros de la mesa actual.' : 'Configura los parámetros de tu mesa para un entrenamiento profesional.'}
+              {showSettings ? 'Modifica los parámetros de la mesa actual.' : 'Ajusta los parámetros de tu mesa para un entrenamiento profesional.'}
             </p>
           </div>
  
@@ -833,14 +833,14 @@ export default function App() {
                     }}
                     className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-emerald-900/20 active:scale-95"
                   >
-                    Nuevo Shoe (Misma Configuración)
+                    Nuevo Shoe (Mismos Ajustes)
                   </button>
                   
                   <button 
                     onClick={() => setShowSettings(true)}
                     className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 text-neutral-400"
                   >
-                    Cambiar Configuración
+                    Cambiar Ajustes
                   </button>
                 </div>
               </div>
@@ -977,4 +977,5 @@ export default function App() {
     </div>
   );
 }
+
 
