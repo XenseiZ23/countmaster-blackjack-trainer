@@ -1,0 +1,6 @@
+{
+  "name": "CountMaster Blackjack Trainer",
+  "description": "Entrena tu memoria y velocidad de conteo de cartas en un entorno de Blackjack simulado con velocidad ajustable.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
