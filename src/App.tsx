@@ -212,6 +212,7 @@ export default function App() {
     }
 
     if (roundIdRef.current !== currentRoundId) return;
+    await wait(speed * 1.5);
     setStatus('checking_count');
   }, [dealerHand.cards.length, deckCount, gameMode, initDeck, playerHands, playerCount, speed, status]);
 
@@ -977,3 +978,4 @@ export default function App() {
     </div>
   );
 }
+
