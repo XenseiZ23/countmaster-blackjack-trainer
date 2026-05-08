@@ -636,7 +636,7 @@ export default function App() {
       </header>
 
       {/* Main Table */}
-      <main className="flex-1 relative flex flex-col items-center justify-between p-1 sm:p-4 overflow-hidden">
+      <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden">
         {/* Table Felt (Background remains visible but potentially darker/blurred) */}
         <div className={`absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#065f46_0%,_#064e3b_100%)] transition-all duration-300 ${isPaused ? 'brightness-[0.2]' : 'brightness-100'}`}>
           <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
@@ -647,7 +647,7 @@ export default function App() {
         {/* Content Blur Wrapper */}
         <div className={`flex-1 w-full flex flex-col items-center justify-between py-2 sm:py-6 transition-all duration-300 ${isPaused ? 'blur-2xl scale-[0.99] pointer-events-none opacity-20 select-none' : 'blur-0 scale-100 opacity-100'}`}>
           {/* Dealer Hand */}
-          <div className="relative z-10 flex flex-col items-center mt-2 sm:mt-8 scale-[0.75] sm:scale-95 md:scale-100">
+          <div className="relative z-10 flex flex-col items-center mt-6 sm:mt-8 scale-[0.75] sm:scale-95 md:scale-100">
             <div className="flex gap-1 sm:gap-2 md:gap-4 min-h-[90px] sm:min-h-[140px] md:min-h-[160px] justify-center px-4 overflow-visible">
               {dealerHand.cards.map((card, i) => (
                 <PlayingCard key={`${card.id}-${i}`} card={card} index={i} />
@@ -656,7 +656,7 @@ export default function App() {
           </div>
 
           {/* Players Container */}
-          <div className="relative z-10 w-full flex flex-wrap justify-center items-end gap-x-4 sm:gap-x-12 md:gap-x-24 gap-y-4 sm:gap-y-16 max-w-7xl px-2 sm:px-6 lg:px-8 pb-4 sm:pb-12 pt-4 sm:pt-12">
+          <div className="relative z-10 w-full flex flex-wrap justify-center items-end gap-x-4 sm:gap-x-12 md:gap-x-24 gap-y-4 sm:gap-y-16 max-w-7xl px-2 sm:px-6 lg:px-8 pb-20 sm:pb-12 pt-4 sm:pt-12">
             {playerHands.map((hand, idx) => {
               // Dynamic scale logic: more players = smaller scale on mobile
               const scaleClass = playerCount > 3 ? "scale-[0.55] sm:scale-90" : "scale-[0.7] sm:scale-100";
@@ -932,8 +932,8 @@ export default function App() {
           {/* Settings Sidebar Removed - Using Full Screen Overlay Instead */}
         </AnimatePresence>
         {/* Training Disclaimer Footer - Subtle and Non-invasive */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 w-full text-center pointer-events-none px-4">
-          <p className="text-[7px] sm:text-[9px] uppercase tracking-[0.4em] font-bold text-white/30 select-none">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 w-full text-center pointer-events-none px-4">
+          <p className="text-[6px] sm:text-[9px] uppercase tracking-[0.4em] font-bold text-white/20 select-none">
             Software de Entrenamiento y Práctica Profesional • Sin Apuestas Reales ni Dinero
           </p>
         </div>
@@ -977,5 +977,3 @@ export default function App() {
     </div>
   );
 }
-
-
