@@ -16,7 +16,7 @@ export default function App() {
   const [dealerHand, setDealerHand] = useState<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
   const [runningCount, setRunningCount] = useState(0);
   const [status, setStatus] = useState<GameStatus>('setup');
-  const [speed, setSpeed] = useState(1000); // ms delay
+  const [speed, setSpeed] = useState(2500); // ms delay
   const [playerCount, setPlayerCount] = useState(1);
   const [userCountInput, setUserCountInput] = useState<string>('');
   const [feedback, setFeedback] = useState<{ show: boolean, correct: boolean, message: string }>({ show: false, correct: false, message: '' });
