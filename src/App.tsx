@@ -212,7 +212,14 @@ export default function App() {
     }
 
     if (roundIdRef.current !== currentRoundId) return;
-    await wait(speed * 1.5);
+    
+    // Tiempo de espera dinámico: a mayor velocidad de juego, mayor el multiplicador para dar tiempo a pensar.
+    // Lento (2500ms) -> x0.5 (~1250ms de espera)
+    // Intermedio (850ms) -> x1.5 (~1275ms de espera)
+    const dynamicMultiplier = 2.0 - (speed / 1650);
+    const waitTime = speed * Math.max(0.4, dynamicMultiplier);
+    
+    await wait(waitTime);
     setStatus('checking_count');
   }, [dealerHand.cards.length, deckCount, gameMode, initDeck, playerHands, playerCount, speed, status]);
 
