@@ -429,7 +429,7 @@ export default function App() {
             {/* Deck Selection (Only for Advanced) */}
             <div className="space-y-6">
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
-                <Database size={14} /> Mazos en el Shoe
+                <Database size={14} /> Número de Mazos
               </div>
               <div className="grid grid-cols-5 gap-2">
                 {[1, 2, 4, 6, 8].map(count => (
