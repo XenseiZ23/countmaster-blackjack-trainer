@@ -21,6 +21,7 @@ export default function App() {
   const [userCountInput, setUserCountInput] = useState<string>('');
   const [feedback, setFeedback] = useState<{ show: boolean, correct: boolean, message: string }>({ show: false, correct: false, message: '' });
   const [showSettings, setShowSettings] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [stats, setStats] = useState<GameStats>({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
   const [gameMode, setGameMode] = useState<GameMode>('standard');
   const [deckCount, setDeckCount] = useState(6);
@@ -213,9 +214,9 @@ export default function App() {
 
     if (roundIdRef.current !== currentRoundId) return;
     
-    // Tiempo de espera dinámico: a mayor velocidad de juego, mayor el multiplicador para dar tiempo a pensar.
-    // Lento (2500ms) -> x0.5 (~1250ms de espera)
-    // Intermedio (850ms) -> x1.5 (~1275ms de espera)
+    // Dynamic wait time: higher speed game = higher multiplier to allow more time to think.
+    // Slow (2500ms) -> x0.5 (~1250ms wait)
+    // Intermediate (850ms) -> x1.5 (~1275ms wait)
     const dynamicMultiplier = 2.0 - (speed / 1650);
     const waitTime = speed * Math.max(0.4, dynamicMultiplier);
     
@@ -254,7 +255,7 @@ export default function App() {
       setFeedback({ show: false, correct: false, message: '' });
       startRound();
     } else {
-      setFeedback({ show: true, correct: false, message: `Incorrecto. La cuenta corriente es ${runningCount}.` });
+      setFeedback({ show: true, correct: false, message: `Incorrect. The running count is ${runningCount}.` });
     }
   };
 
@@ -290,13 +291,13 @@ export default function App() {
 
     // Speed levels definition
     const speedLevels = [
-      { name: 'Lento', value: 2500, pos: 0, intensity: 'Básico', color: 'text-emerald-400' },
-      { name: 'Intermedio', value: 850, pos: 50, intensity: 'Estándar', color: 'text-blue-400' },
-      { name: 'Rápido', value: 400, pos: 100, intensity: 'Nivel Experto', color: 'text-red-400' },
+      { name: 'Slow', value: 2500, pos: 0, intensity: 'Basic', color: 'text-emerald-400' },
+      { name: 'Intermediate', value: 850, pos: 50, intensity: 'Standard', color: 'text-blue-400' },
+      { name: 'Fast', value: 400, pos: 100, intensity: 'Expert Level', color: 'text-red-400' },
     ];
 
     // Helper to map slider value (0-100) to speed (ms)
-    // Symmetrical mapping: 0-50 (Lento to Intermedio), 50-100 (Intermedio to Rápido)
+    // Symmetrical mapping: 0-50 (Slow to Intermediate), 50-100 (Intermediate to Fast)
     const mapSliderToSpeed = (val: number) => {
       if (val <= 50) {
         // Map 0 -> 2500, 50 -> 850
@@ -316,6 +317,84 @@ export default function App() {
     };
 
     const currentLevel = speed >= 1600 ? speedLevels[0] : speed > 600 ? speedLevels[1] : speedLevels[2];
+
+    const renderAboutModal = () => (
+      <AnimatePresence>
+        {showAbout && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAbout(false)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 sm:p-6"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-xl w-full bg-neutral-900 border border-white/10 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group text-left"
+            >
+              {/* Decorative Background */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] pointer-events-none" />
+              
+              <button 
+                onClick={() => setShowAbout(false)}
+                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white transition-colors z-10"
+              >
+                <XCircle size={24} />
+              </button>
+
+              <div className="relative space-y-8">
+                <div className="space-y-2">
+                  <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 mb-4">
+                    <Clover size={24} className="text-emerald-500 fill-emerald-500/20" />
+                  </div>
+                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white">CountMaster</h2>
+                  <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em]">Advanced Practice Interface</p>
+                </div>
+
+                <div className="space-y-6 text-neutral-400 text-sm leading-relaxed font-medium">
+                  <p>
+                    <span className="text-white font-bold">CountMaster</span> is a free browser-based blackjack card counting trainer designed for Hi-Lo practice.
+                  </p>
+                  <p>
+                    The project was created to provide an accessible and customizable training experience without downloads or paid software.
+                  </p>
+                  <p>
+                    It is actively being improved with a focus on realistic training flow, responsive design, performance, and usability.
+                  </p>
+                  <p className="pt-4 border-t border-white/5">
+                    Built and maintained independently by <span className="text-white font-bold">XenseiZ23</span>.
+                  </p>
+                  
+                  <div className="bg-emerald-500/5 border border-emerald-500/10 p-6 rounded-2xl space-y-3">
+                    <p className="text-white font-bold text-xs uppercase tracking-widest">Support the project</p>
+                    <p className="text-xs">
+                      If you enjoy using CountMaster and want to support future improvements, you can support the project here. Contributions help maintain the platform and fund new features, optimizations, and updates.
+                    </p>
+                    <button className="text-emerald-400 hover:text-emerald-300 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2 pt-2">
+                      Support / Donations <Play size={8} fill="currentColor" />
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] italic opacity-60">
+                    Feedback, suggestions, and bug reports are always appreciated. CountMaster is continuously evolving, and community input helps improve the experience for everyone.
+                  </p>
+                </div>
+
+                <button 
+                  onClick={() => setShowAbout(false)}
+                  className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all text-neutral-400"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
 
     if (status === 'setup' || showSettings) {
       return (
@@ -380,26 +459,33 @@ export default function App() {
               <button 
                 onClick={() => setShowSettings(false)}
                 className="absolute -top-6 -right-6 p-4 text-neutral-500 hover:text-white transition-colors"
-                title="Cerrar Ajustes"
+                title="Close Settings"
               >
                 <XCircle size={32} />
               </button>
             )}
             
-            <div className="mb-8 p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
+            <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
+              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">About</button>
+              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">Support</button>
+              <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">Feedback</button>
+            </div>
+            
+            <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
               <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest leading-relaxed">
-                Software de entrenamiento y práctica
+                Training & Practice Software
               </p>
               <p className="text-[10px] text-neutral-500 font-medium leading-relaxed mt-1">
-                Esta aplicación no permite realizar apuestas ni ingresar dinero. Es exclusivamente para la práctica técnica del conteo de cartas.
+                This application does not allow real betting or money. It is exclusively for card counting technical practice.
               </p>
             </div>
 
-            <h1 className="text-5xl font-black tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent uppercase italic">
-              Ajustes
+            <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent uppercase italic">
+              Settings
             </h1>
             <p className="text-neutral-400 font-medium max-w-sm mx-auto">
-              {showSettings ? 'Modifica los parámetros de la mesa actual.' : 'Ajusta los parámetros de tu mesa para un entrenamiento profesional.'}
+              {showSettings ? 'Modify your current table settings.' : 'Adjust your table parameters for professional training.'}
             </p>
           </div>
  
@@ -407,12 +493,12 @@ export default function App() {
             {/* Game Mode Selection */}
             <div className="space-y-6">
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
-                <Zap size={14} /> Modo de Entrenamiento
+                <Zap size={14} /> Training Mode
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { id: 'standard', name: 'Estándar', desc: 'Infinito' },
-                  { id: 'advanced', name: 'Avanzado', desc: 'Calculadora' }
+                  { id: 'standard', name: 'Standard', desc: 'Infinite' },
+                  { id: 'advanced', name: 'Advanced', desc: 'Calculator' }
                 ].map(mode => (
                   <button
                     key={mode.id}
@@ -429,7 +515,7 @@ export default function App() {
             {/* Deck Selection (Only for Advanced) */}
             <div className="space-y-6">
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
-                <Database size={14} /> Número de Mazos
+                <Database size={14} /> Number of Decks
               </div>
               <div className="grid grid-cols-5 gap-2">
                 {[1, 2, 4, 6, 8].map(count => (
@@ -452,7 +538,7 @@ export default function App() {
             {/* Player Selection - Symmetrical spacing */}
             <div className="space-y-6">
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
-                <Users size={14} /> Jugadores en Mesa
+                <Users size={14} /> Players at Table
               </div>
               <div className="grid grid-cols-4 gap-3">
                 {[1, 2, 3, 5].map(num => (
@@ -470,7 +556,7 @@ export default function App() {
             {/* Speed Presets - Symmetrical spacing */}
             <div className="space-y-6">
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
-                <Gauge size={14} /> Velocidad de repartición
+                <Gauge size={14} /> Dealing Speed
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {speedLevels.map(s => {
@@ -493,13 +579,13 @@ export default function App() {
           <div className="space-y-12 pt-10 border-t border-white/10">
             <div className="flex flex-col md:flex-row justify-between items-center bg-white/5 px-8 py-6 rounded-[2rem] border border-white/5 gap-6">
               <div className="space-y-1 text-center md:text-left">
-                <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Ritmo de Reparto</div>
+                <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Dealing Pace</div>
                 <div className="text-3xl font-bold font-mono text-emerald-400 tabular-nums">
-                  {(speed / 1000).toFixed(2)}<span className="text-xs text-neutral-500 px-2 font-sans italic">seg</span>
+                  {(speed / 1000).toFixed(2)}<span className="text-xs text-neutral-500 px-2 font-sans italic">sec</span>
                 </div>
               </div>
               <div className="text-center md:text-right">
-                <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Intensidad</div>
+                <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Intensity</div>
                 <div className={`text-base font-bold uppercase tracking-wider transition-all duration-500 ${currentLevel.color}`}>
                   {currentLevel.intensity}
                 </div>
@@ -572,7 +658,7 @@ export default function App() {
               }}
               className="w-full py-6 bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 rounded-[2rem] text-xl font-black uppercase tracking-wider shadow-2xl shadow-emerald-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4"
             >
-              {status === 'setup' ? 'Empezar Entrenamiento' : 'Aplicar y Volver'} <Play fill="currentColor" size={24} />
+              {status === 'setup' ? 'Start Training' : 'Apply & Return'} <Play fill="currentColor" size={24} />
             </button>
  
             {showSettings && (
@@ -583,10 +669,11 @@ export default function App() {
                 }}
                 className="w-full py-4 text-neutral-500 hover:text-red-400 transition-colors uppercase tracking-[0.2em] font-bold text-xs flex items-center justify-center gap-2"
               >
-                <RotateCcw size={14} /> Salir y Reiniciar Juego
+                <RotateCcw size={14} /> Exit & Reset Game
               </button>
             )}
           </div>
+          {renderAboutModal()}
         </motion.div>
       </div>
     );
@@ -604,7 +691,7 @@ export default function App() {
           <div>
             <h1 className="text-sm font-medium tracking-tight">CountMaster Blackjack Trainer</h1>
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-emerald-400/80">
-              <Trophy size={10} /> Precisión: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
+              <Trophy size={10} /> Accuracy: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
             </div>
           </div>
         </div>
@@ -612,18 +699,18 @@ export default function App() {
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-6 px-4 py-1.5 rounded-xl bg-white/5 border border-white/5 mr-2">
             <div className="flex flex-col items-center">
-              <span className="text-[7px] text-neutral-500 uppercase font-black tracking-widest leading-none mb-1">Ronda</span>
+              <span className="text-[7px] text-neutral-500 uppercase font-black tracking-widest leading-none mb-1">Round</span>
               <span className="text-[11px] font-mono font-bold text-emerald-400 leading-none">{stats.totalRounds + 1}</span>
             </div>
             <div className="w-px h-6 bg-white/10" />
             <div className="flex flex-col items-center">
-              <span className="text-[7px] text-neutral-500 uppercase font-black tracking-widest leading-none mb-1">Ritmo</span>
+              <span className="text-[7px] text-neutral-500 uppercase font-black tracking-widest leading-none mb-1">Pace</span>
               <span className="text-[11px] font-mono font-bold text-white leading-none">{speed}ms</span>
             </div>
           </div>
           
           <div className="hidden sm:flex flex-col items-end mr-4">
-            <span className="text-[10px] text-neutral-400 uppercase tracking-widest">Jugadores</span>
+            <span className="text-[10px] text-neutral-400 uppercase tracking-widest">Players</span>
             <span className="text-sm font-bold">{playerCount}</span>
           </div>
 
@@ -669,7 +756,7 @@ export default function App() {
               // Dynamic scale logic: more players = smaller scale on mobile
               const scaleClass = playerCount > 3 ? "scale-[0.55] sm:scale-90" : "scale-[0.7] sm:scale-100";
               
-              // Compress card spacing if hand has many cards to prevent overlap with neighbors
+              // Compress card spacing if hand has many cards to prevent overflow with neighbors
               const currentCardCount = hand.cards.length;
               const spacingMultiplier = currentCardCount > 5 ? 0.5 : (currentCardCount > 4 ? 0.7 : (currentCardCount > 3 ? 0.85 : 1));
               const mobileSpacing = 16 * spacingMultiplier;
@@ -737,8 +824,8 @@ export default function App() {
               </div>
               
               <div className="flex flex-col items-center opacity-40 group-hover:opacity-100 transition-opacity">
-                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Charola</span>
-                <span className="text-[9px] font-bold text-white/50 tabular-nums">{cardsInDiscard} cartas</span>
+                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Discard</span>
+                <span className="text-[9px] font-bold text-white/50 tabular-nums">{cardsInDiscard} cards</span>
               </div>
             </motion.div>
           )}
@@ -763,8 +850,8 @@ export default function App() {
                 className="flex flex-col items-center gap-8 max-w-md px-6"
                >
                  <div className="text-center space-y-4">
-                   <h2 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">Pausa</h2>
-                   <p className="text-neutral-400 font-medium text-xs sm:text-sm tracking-wide leading-relaxed">El entrenamiento se ha detenido. Los datos de la mesa han sido ocultados para mantener la integridad del conteo.</p>
+                   <h2 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">Pause</h2>
+                   <p className="text-neutral-400 font-medium text-xs sm:text-sm tracking-wide leading-relaxed">Training session paused. Table data hidden to maintain count integrity.</p>
                  </div>
 
                  <button 
@@ -772,7 +859,7 @@ export default function App() {
                   className="group relative px-12 py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase italic tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(16,185,129,0.3)]"
                  >
                    <div className="flex items-center gap-4">
-                     <span>Reanudar</span>
+                     <span>Resume</span>
                      <Play size={18} fill="currentColor" />
                    </div>
                    <div className="absolute inset-0 rounded-2xl border-2 border-white/40 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
@@ -793,7 +880,7 @@ export default function App() {
                 className="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
               >
                 <Play fill="currentColor" size={48} className="text-white" />
-                <span className="font-bold text-xl uppercase tracking-widest">Empezar Mano</span>
+                <span className="font-bold text-xl uppercase tracking-widest">Start Hand</span>
               </button>
             </motion.div>
           )}
@@ -811,9 +898,9 @@ export default function App() {
                 </div>
                 
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">Fin del Shoe</h2>
+                  <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">End of Shoe</h2>
                   <p className="text-neutral-400 text-sm font-medium leading-relaxed italic">
-                    Has llegado al punto de corte del mazo. No hay cartas suficientes para garantizar una mano completa sin afectar la integridad de la cuenta real.
+                    You've reached the deck penetration cut card. Not enough cards to guarantee a full hand without affecting true count integrity.
                   </p>
                   <div className="grid grid-cols-2 gap-3 w-full bg-white/5 border border-white/10 p-4 rounded-2xl">
                     <div className="text-center">
@@ -841,14 +928,14 @@ export default function App() {
                     }}
                     className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-emerald-900/20 active:scale-95"
                   >
-                    Nuevo Shoe (Mismos Ajustes)
+                    New Shoe (Same Settings)
                   </button>
                   
                   <button 
                     onClick={() => setShowSettings(true)}
                     className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 text-neutral-400"
                   >
-                    Cambiar Ajustes
+                    Change Settings
                   </button>
                 </div>
               </div>
@@ -864,7 +951,7 @@ export default function App() {
               <div className="max-w-sm w-full bg-neutral-900 border border-white/10 p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col gap-4 sm:gap-6">
                 <div className="text-center">
                   <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 uppercase tracking-tight">RUNNING COUNT</h2>
-                  <p className="text-neutral-400 text-[10px] sm:text-sm">Sigue contando mano a mano.</p>
+                  <p className="text-neutral-400 text-[10px] sm:text-sm">Keep counting hand by hand.</p>
                 </div>
 
                 {!feedback.show ? (
@@ -908,7 +995,7 @@ export default function App() {
                       onClick={(e) => verifyCount(e)}
                       className="w-full py-4 sm:py-5 bg-emerald-600 hover:bg-emerald-500 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]"
                     >
-                      Verificar Cuenta
+                      Verify Count
                     </button>
                   </>
                 ) : (
@@ -919,16 +1006,16 @@ export default function App() {
                         <XCircle size={36} className="text-red-500 sm:w-12 sm:h-12" />
                       </div>
                       <div className="text-center">
-                        <p className="text-2xl sm:text-3xl font-black text-red-500 uppercase tracking-tighter italic">FALLASTE</p>
+                        <p className="text-2xl sm:text-3xl font-black text-red-500 uppercase tracking-tighter italic">FAILED</p>
                         <p className="text-neutral-400 text-xs sm:text-sm mt-2 font-medium">
-                          La cuenta corriente es <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{runningCount}</span>
+                          The running count is <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{runningCount}</span>
                         </p>
                       </div>
                       <button 
                         onClick={continueAfterError}
                         className="w-full py-4 sm:py-5 bg-gradient-to-r from-neutral-800 to-neutral-700 hover:from-neutral-700 hover:to-neutral-600 border border-white/5 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] flex items-center justify-center transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
                       >
-                        Continuar Entrenamiento
+                        Continue Training
                       </button>
                     </>
                   </div>
@@ -939,10 +1026,10 @@ export default function App() {
 
           {/* Settings Sidebar Removed - Using Full Screen Overlay Instead */}
         </AnimatePresence>
-        {/* Training Disclaimer Footer - Subtle and Non-invasive */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 w-full text-center pointer-events-none px-4">
-          <p className="text-[6px] sm:text-[9px] uppercase tracking-[0.4em] font-bold text-white/20 select-none">
-            Software de Entrenamiento y Práctica Profesional • Sin Apuestas Reales ni Dinero
+        {/* Training Disclaimer Footer - Moved slightly or smaller */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 w-full text-center pointer-events-none px-4">
+          <p className="text-[6px] sm:text-[8px] uppercase tracking-[0.3em] font-medium text-white/10 select-none">
+            Training Software • No Real Money
           </p>
         </div>
       </main>
@@ -951,37 +1038,22 @@ export default function App() {
       <footer className="p-3 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex gap-4">
-            <span>SISTEMA HI-LO</span>
+            <span>HI-LO SYSTEM</span>
             <span className="text-emerald-500">2-6 (+1)</span>
             <span className="text-neutral-400">7-9 (0)</span>
             <span className="text-red-500">10-A (-1)</span>
           </div>
-          
-          {gameMode === 'advanced' && !isPaused && (
-            <div className="flex items-center gap-4 sm:gap-6 border-l border-white/10 pl-4 sm:pl-6">
-              <div className="flex flex-col">
-                <span className="text-[7px] sm:text-[8px] opacity-60">Mazos</span>
-                <span className="text-white font-mono text-[9px] sm:text-xs">{(deck.length / 52).toFixed(1)}</span>
-              </div>
-              {status === 'checking_count' && (
-                <div className="flex flex-col">
-                  <span className="text-[7px] sm:text-[8px] opacity-60 text-emerald-400">True</span>
-                  <span className="text-emerald-400 font-mono font-bold text-[9px] sm:text-xs">
-                    {deck.length > 0 ? (runningCount / Math.max(0.5, deck.length / 52)).toFixed(1) : '0.0'}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
+        
         <div className="flex items-center gap-4">
           {gameMode === 'advanced' ? (
-            <div className="px-2 py-0.5 rounded border border-emerald-500/30 text-emerald-400 font-black text-[8px]">MODO CALCULADORA</div>
+            <div className="px-2 py-0.5 rounded border border-emerald-500/30 text-emerald-400 font-black text-[8px]">ADVANCED</div>
           ) : (
-            <div className="px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 font-black text-[8px] uppercase">Práctica Continua</div>
+            <div className="px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 font-black text-[8px]">BASIC</div>
           )}
         </div>
       </footer>
+      {renderAboutModal()}
     </div>
   );
 }
