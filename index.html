@@ -28,7 +28,11 @@
     <!-- Theme -->
     <meta name="theme-color" content="#059669" />
 
-    <!-- Open Graph (Discord, Facebook, WhatsApp, etc.) -->
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
 
     <meta
@@ -68,11 +72,37 @@
       name="twitter:image"
       content="https://countmaster-blackjack-trainer.vercel.app/preview.png"
     />
+
+    <!-- Faster First Paint -->
+    <style>
+      :root {
+        --bg-neutral-900: #171717;
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--bg-neutral-900);
+        color: white;
+      }
+
+      #root {
+        min-height: 100vh;
+      }
+
+      .fcp-bg {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+        z-index: -1;
+      }
+    </style>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="fcp-bg"></div>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

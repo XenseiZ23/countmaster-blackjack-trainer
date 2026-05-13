@@ -1,6 +1,9 @@
 {
   "name": "CountMaster Blackjack Trainer",
-  "description": "Entrena tu memoria y velocidad de conteo de cartas en un entorno de Blackjack simulado con velocidad ajustable.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "short_name": "CountMaster",
+  "description": "Master card counting and memory in a high-fidelity blackjack simulator.",
+  "theme_color": "#059669",
+  "background_color": "#171717",
+  "display": "standalone",
+  "start_url": "/"
 }
