@@ -1,16 +1,29 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, RotateCcw, Settings, CheckCircle2, XCircle, SkipForward, Users, Gauge, Trophy, Plus, Minus, Zap, Database, Pause, Clover } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, GameStatus, Hand, GameStats, GameMode } from './types';
 import { createDeck, calculateHandScore, isBlackjack, getBasicStrategyAction } from './lib/blackjack';
 import { PlayingCard } from './components/PlayingCard';
 
+const MemoPlayingCard = React.memo(PlayingCard);
+
 export default function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    document.title = 'CountMaster Blackjack Trainer';
+  }, []);
+
   const [deck, setDeck] = useState<Card[]>([]);
   const [playerHands, setPlayerHands] = useState<Hand[]>([]);
   const [dealerHand, setDealerHand] = useState<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
@@ -21,7 +34,6 @@ export default function App() {
   const [userCountInput, setUserCountInput] = useState<string>('');
   const [feedback, setFeedback] = useState<{ show: boolean, correct: boolean, message: string }>({ show: false, correct: false, message: '' });
   const [showSettings, setShowSettings] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
   const [stats, setStats] = useState<GameStats>({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
   const [gameMode, setGameMode] = useState<GameMode>('standard');
   const [deckCount, setDeckCount] = useState(6);
@@ -122,7 +134,7 @@ export default function App() {
       if (deckRef.current.length === 0) return null;
       
       const newDeck = [...deckRef.current];
-      const card = newDeck.pop();
+      const card = { ...newDeck.pop()! }; // Create a copy of the card object
       if (!card) return null;
       
       card.isRevealed = reveal;
@@ -135,7 +147,7 @@ export default function App() {
       }
 
       if (targetId === -1) {
-        currentDealer.cards.push(card);
+        currentDealer.cards = [...currentDealer.cards, card]; // Immutable array update
         currentDealer.score = calculateHandScore(currentDealer.cards);
         currentDealer.isBusted = currentDealer.score > 21;
         currentDealer.isBlackjack = isBlackjack(currentDealer.cards);
@@ -143,7 +155,7 @@ export default function App() {
       } else {
         const hand = currentHands[targetId];
         if (hand) {
-          hand.cards.push(card);
+          hand.cards = [...hand.cards, card]; // Immutable array update
           hand.score = calculateHandScore(hand.cards);
           hand.isBusted = hand.score > 21;
           hand.isBlackjack = isBlackjack(hand.cards);
@@ -196,8 +208,12 @@ export default function App() {
     await wait(speed / 1.5);
     // Reveal Hole Card
     if (currentDealer.cards.length >= 2) {
-      currentDealer.cards[1].isRevealed = true;
-      currentRunningCount.current += currentDealer.cards[1].countValue;
+      const holeCard = { ...currentDealer.cards[1], isRevealed: true };
+      const newDealerCards = [...currentDealer.cards];
+      newDealerCards[1] = holeCard;
+      currentDealer.cards = newDealerCards;
+      
+      currentRunningCount.current += holeCard.countValue;
       setRunningCount(currentRunningCount.current);
       currentDealer.score = calculateHandScore(currentDealer.cards);
       setDealerHand({ ...currentDealer });
@@ -238,6 +254,7 @@ export default function App() {
     if (feedback.show) return;
 
     const input = parseInt(userCountInput);
+    if (isNaN(input)) return;
     const isCorrect = input === runningCount;
     
     setStats(prev => {
@@ -318,84 +335,6 @@ export default function App() {
 
     const currentLevel = speed >= 1600 ? speedLevels[0] : speed > 600 ? speedLevels[1] : speedLevels[2];
 
-    const renderAboutModal = () => (
-      <AnimatePresence>
-        {showAbout && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowAbout(false)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 sm:p-6"
-          >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="max-w-xl w-full bg-neutral-900 border border-white/10 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group text-left"
-            >
-              {/* Decorative Background */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] pointer-events-none" />
-              
-              <button 
-                onClick={() => setShowAbout(false)}
-                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white transition-colors z-10"
-              >
-                <XCircle size={24} />
-              </button>
-
-              <div className="relative space-y-8">
-                <div className="space-y-2">
-                  <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 mb-4">
-                    <Clover size={24} className="text-emerald-500 fill-emerald-500/20" />
-                  </div>
-                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white">CountMaster</h2>
-                  <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em]">Advanced Practice Interface</p>
-                </div>
-
-                <div className="space-y-6 text-neutral-400 text-sm leading-relaxed font-medium">
-                  <p>
-                    <span className="text-white font-bold">CountMaster</span> is a free browser-based blackjack card counting trainer designed for Hi-Lo practice.
-                  </p>
-                  <p>
-                    The project was created to provide an accessible and customizable training experience without downloads or paid software.
-                  </p>
-                  <p>
-                    It is actively being improved with a focus on realistic training flow, responsive design, performance, and usability.
-                  </p>
-                  <p className="pt-4 border-t border-white/5">
-                    Built and maintained independently by <span className="text-white font-bold">XenseiZ23</span>.
-                  </p>
-                  
-                  <div className="bg-emerald-500/5 border border-emerald-500/10 p-6 rounded-2xl space-y-3">
-                    <p className="text-white font-bold text-xs uppercase tracking-widest">Support the project</p>
-                    <p className="text-xs">
-                      If you enjoy using CountMaster and want to support future improvements, you can support the project here. Contributions help maintain the platform and fund new features, optimizations, and updates.
-                    </p>
-                    <button className="text-emerald-400 hover:text-emerald-300 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2 pt-2">
-                      Support / Donations <Play size={8} fill="currentColor" />
-                    </button>
-                  </div>
-
-                  <p className="text-[11px] italic opacity-60">
-                    Feedback, suggestions, and bug reports are always appreciated. CountMaster is continuously evolving, and community input helps improve the experience for everyone.
-                  </p>
-                </div>
-
-                <button 
-                  onClick={() => setShowAbout(false)}
-                  className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all text-neutral-400"
-                >
-                  Close
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-
     if (status === 'setup' || showSettings) {
       return (
         <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center p-6 bg-[radial-gradient(circle_at_center,_#1a1a1a_0%,_#000000_100%)] overflow-auto">
@@ -451,7 +390,7 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl w-full bg-neutral-800/40 backdrop-blur-3xl border border-white/10 rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-12 shadow-2xl flex flex-col gap-6 sm:gap-12"
+          className="max-w-2xl w-full bg-neutral-800/40 backdrop-blur-sm border border-white/10 rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-12 shadow-2xl flex flex-col gap-6 sm:gap-12"
         >
           {/* Header - Perfectly Centered */}
           <div className="text-center space-y-4 relative">
@@ -466,10 +405,10 @@ export default function App() {
             )}
             
             <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
-              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">About</button>
-              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">Support</button>
+              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">About</Link>
+              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Support</Link>
               <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-              <button onClick={() => setShowAbout(true)} className="hover:text-white transition-colors cursor-pointer">Feedback</button>
+              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</Link>
             </div>
             
             <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
@@ -503,7 +442,7 @@ export default function App() {
                   <button
                     key={mode.id}
                     onClick={() => setGameMode(mode.id as GameMode)}
-                    className={`p-4 rounded-2xl border transition-all flex flex-col items-center gap-1 ${gameMode === mode.id ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10'}`}
+                    className={`p-4 rounded-2xl border transition-opacity flex flex-col items-center gap-1 ${gameMode === mode.id ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10'}`}
                   >
                     <span className="font-bold text-sm">{mode.name}</span>
                     <span className="text-[9px] uppercase tracking-tighter opacity-60 font-black">{mode.desc}</span>
@@ -525,7 +464,7 @@ export default function App() {
                       setDeckCount(count);
                       setGameMode('advanced');
                     }}
-                    className={`py-4 rounded-xl border transition-all font-bold text-xs ${deckCount === count && gameMode === 'advanced' ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl' : 'bg-white/5 border-white/10 text-neutral-500 hover:bg-white/10'}`}
+                    className={`py-4 rounded-xl border transition-opacity font-bold text-xs ${deckCount === count && gameMode === 'advanced' ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl' : 'bg-white/5 border-white/10 text-neutral-500 hover:bg-white/10'}`}
                   >
                     {count}
                   </button>
@@ -545,7 +484,7 @@ export default function App() {
                   <button
                     key={num}
                     onClick={() => setPlayerCount(num)}
-                    className={`py-4 rounded-2xl border transition-all font-bold text-sm ${playerCount === num ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10'}`}
+                    className={`py-4 rounded-2xl border transition-opacity font-bold text-sm ${playerCount === num ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10'}`}
                   >
                     {num}
                   </button>
@@ -565,7 +504,7 @@ export default function App() {
                     <button
                       key={s.value}
                       onClick={() => setSpeed(s.value)}
-                      className={`py-4 rounded-2xl border text-[10px] uppercase font-black transition-all ${isActive ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl scale-105' : 'bg-white/5 border-white/10 text-neutral-500 hover:bg-white/10'}`}
+                      className={`py-4 rounded-2xl border text-[10px] uppercase font-black transition-opacity ${isActive ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl scale-105' : 'bg-white/5 border-white/10 text-neutral-500 hover:bg-white/10'}`}
                     >
                       {s.name}
                     </button>
@@ -586,7 +525,7 @@ export default function App() {
               </div>
               <div className="text-center md:text-right">
                 <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Intensity</div>
-                <div className={`text-base font-bold uppercase tracking-wider transition-all duration-500 ${currentLevel.color}`}>
+                <div className={`text-base font-bold uppercase tracking-wider transition-opacity duration-300 ${currentLevel.color}`}>
                   {currentLevel.intensity}
                 </div>
               </div>
@@ -601,18 +540,18 @@ export default function App() {
                     <React.Fragment key={level.value}>
                       {/* Top Dot */}
                       <div 
-                        className="absolute top-0 flex flex-col items-center -translate-x-1/2 transition-all duration-500" 
+                        className="absolute top-0 flex flex-col items-center -translate-x-1/2 transition-opacity duration-300" 
                         style={{ left: `${level.pos}%` }}
                       >
-                        <div className={`w-3 h-3 rounded-full transition-all duration-500 ${isNear ? 'bg-emerald-400 scale-125 shadow-[0_0_15px_rgba(52,211,153,0.8)]' : 'bg-white/10'}`} />
+                        <div className={`w-3 h-3 rounded-full transition-opacity duration-300 ${isNear ? 'bg-emerald-400 scale-125 shadow-[0_0_15px_rgba(52,211,153,0.8)]' : 'bg-white/10'}`} />
                       </div>
                       
                       {/* Name Label */}
                       <div 
-                        className="absolute top-12 -translate-x-1/2 flex flex-col items-center transition-all duration-500"
+                        className="absolute top-12 -translate-x-1/2 flex flex-col items-center transition-opacity duration-300"
                         style={{ left: `${level.pos}%` }}
                       >
-                        <span className={`text-[11px] uppercase tracking-[0.3em] font-black transition-colors duration-500 whitespace-nowrap ${
+                        <span className={`text-[11px] uppercase tracking-[0.3em] font-black transition-colors duration-300 whitespace-nowrap ${
                           isNear ? level.color : 'text-neutral-700'
                         }`}>
                           {level.name}
@@ -642,7 +581,7 @@ export default function App() {
                   }
                   setSpeed(Math.round(finalDelay));
                 }}
-                className="relative z-10 w-full cursor-pointer h-2 bg-transparent appearance-none transition-all mb-20 outline-none"
+                className="relative z-10 w-full cursor-pointer h-2 bg-transparent appearance-none transition-opacity mb-20 outline-none"
               />
             </div>
           </div>
@@ -656,7 +595,7 @@ export default function App() {
                 setStatus('idle');
                 setShowSettings(false);
               }}
-              className="w-full py-6 bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 rounded-[2rem] text-xl font-black uppercase tracking-wider shadow-2xl shadow-emerald-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4"
+              className="w-full py-6 bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 rounded-[2rem] text-xl font-black uppercase tracking-wider shadow-2xl shadow-emerald-900/40 transition-opacity hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4"
             >
               {status === 'setup' ? 'Start Training' : 'Apply & Return'} <Play fill="currentColor" size={24} />
             </button>
@@ -673,7 +612,6 @@ export default function App() {
               </button>
             )}
           </div>
-          {renderAboutModal()}
         </motion.div>
       </div>
     );
@@ -681,9 +619,9 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col overflow-hidden transform-gpu">
       {/* Header */}
-      <header className="p-4 flex justify-between items-center bg-black/40 backdrop-blur-md border-b border-white/10 z-10 shrink-0">
+      <header className="p-4 flex justify-between items-center bg-black/40 backdrop-blur-sm border-b border-white/10 z-10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center">
             <Clover size={24} className="text-emerald-500 fill-emerald-500/20" />
@@ -716,7 +654,7 @@ export default function App() {
 
           <button 
             onClick={() => setIsPaused(!isPaused)}
-            className={`p-2 rounded-full transition-all duration-300 ${isPaused ? 'bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'hover:bg-white/10 text-white'}`}
+            className={`p-2 rounded-full transition-opacity duration-300 ${isPaused ? 'bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'hover:bg-white/10 text-white'}`}
           >
             {isPaused ? <Play size={20} fill="currentColor" /> : <Pause size={20} />}
           </button>
@@ -731,21 +669,21 @@ export default function App() {
       </header>
 
       {/* Main Table */}
-      <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden">
+      <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden isolate">
         {/* Table Felt (Background remains visible but potentially darker/blurred) */}
-        <div className={`absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#065f46_0%,_#064e3b_100%)] transition-all duration-300 ${isPaused ? 'brightness-[0.2]' : 'brightness-100'}`}>
+        <div className={`absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#065f46_0%,_#064e3b_100%)] transition-opacity duration-300 ${isPaused ? 'brightness-[0.2]' : 'brightness-100'}`}>
           <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
           {/* Table markings */}
           <div className={`absolute -top-1/4 left-1/2 -translate-x-1/2 w-[120vw] h-[80vw] border-[12px] border-white/10 rounded-[100%] pointer-events-none transition-opacity duration-300 ${isPaused ? 'opacity-20' : 'opacity-100'}`} />
         </div>
 
         {/* Content Blur Wrapper */}
-        <div className={`flex-1 w-full flex flex-col items-center justify-between py-2 sm:py-6 transition-all duration-300 ${isPaused ? 'blur-2xl scale-[0.99] pointer-events-none opacity-20 select-none' : 'blur-0 scale-100 opacity-100'}`}>
+        <div className={`flex-1 w-full flex flex-col items-center justify-between py-2 sm:py-6 transition-opacity duration-300 ${isPaused ? 'blur-md scale-[0.99] pointer-events-none opacity-20 select-none' : 'blur-0 scale-100 opacity-100'}`}>
           {/* Dealer Hand */}
           <div className="relative z-10 flex flex-col items-center mt-6 sm:mt-8 scale-[0.75] sm:scale-95 md:scale-100">
             <div className="flex gap-1 sm:gap-2 md:gap-4 min-h-[90px] sm:min-h-[140px] md:min-h-[160px] justify-center px-4 overflow-visible">
               {dealerHand.cards.map((card, i) => (
-                <PlayingCard key={`${card.id}-${i}`} card={card} index={i} />
+                <MemoPlayingCard key={`${card.id}-${i}`} card={card} index={i} />
               ))}
             </div>
           </div>
@@ -763,22 +701,22 @@ export default function App() {
               const desktopSpacing = CARD_SPACING * spacingMultiplier;
               
               return (
-                <div key={idx} className={`flex flex-col items-center gap-2 sm:gap-4 shrink-0 transition-all duration-500 origin-bottom ${scaleClass}`}>
+                <div key={idx} className={`flex flex-col items-center gap-2 sm:gap-4 shrink-0 transition-opacity duration-300 origin-bottom ${scaleClass}`}>
                   <div 
                     className="relative min-w-[60px] sm:min-w-[80px] md:min-w-[100px] h-[100px] sm:h-[140px] md:h-[160px] flex justify-center"
-                    style={{ width: `${Math.max(60, 50 + (hand.cards.length - 1) * (window.innerWidth < 640 ? mobileSpacing : desktopSpacing))}px` }}
+                    style={{ width: `${Math.max(60, 50 + (hand.cards.length - 1) * (isMobile ? mobileSpacing : desktopSpacing))}px` }}
                   >
                     {hand.cards.map((card, i) => (
                       <div 
                         key={`${card.id}-${idx}-${i}`} 
-                        className="absolute top-0 transition-all duration-300" 
+                        className="absolute top-0 transition-opacity duration-300" 
                         style={{ 
-                          left: `${i * (window.innerWidth < 640 ? mobileSpacing : desktopSpacing)}px`, 
+                          left: `${i * (isMobile ? mobileSpacing : desktopSpacing)}px`, 
                           zIndex: i,
                           transform: `rotate(${(i - (hand.cards.length - 1) / 2) * 2}deg)`
                         }}
                       >
-                        <PlayingCard card={card} index={i} />
+                        <MemoPlayingCard card={card} index={i} />
                       </div>
                     ))}
                   </div>
@@ -793,7 +731,7 @@ export default function App() {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="absolute top-20 sm:top-28 left-4 sm:left-12 z-10 flex flex-col items-center gap-2 scale-75 sm:scale-110 origin-top-left group cursor-help transition-all"
+              className="absolute top-20 sm:top-28 left-4 sm:left-12 z-10 flex flex-col items-center gap-2 scale-75 sm:scale-110 origin-top-left group cursor-help transition-opacity"
             >
               {/* Discard Tray Container - Transparent Plastic/Acrylic look */}
               <div className="relative w-20 h-24 bg-white/5 border border-white/20 rounded-t-sm shadow-2xl overflow-hidden perspective-1000">
@@ -812,7 +750,7 @@ export default function App() {
                   }}
                   initial={{ height: 0 }}
                   animate={{ height: `${( cardsInDiscard / (deckCount * 52) ) * 85}%` }}
-                  transition={{ type: 'spring', stiffness: 40, damping: 15 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {/* Card patterns side view */}
                   <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(0deg,#fff,#fff_1px,#ccc_1px,#ccc_2px)]" />
@@ -842,7 +780,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md"
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
             >
                <motion.div 
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -856,13 +794,13 @@ export default function App() {
 
                  <button 
                   onClick={() => setIsPaused(false)}
-                  className="group relative px-12 py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase italic tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(16,185,129,0.3)]"
+                  className="group relative px-12 py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase italic tracking-wider transition-opacity duration-300 hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(16,185,129,0.3)]"
                  >
                    <div className="flex items-center gap-4">
                      <span>Resume</span>
                      <Play size={18} fill="currentColor" />
                    </div>
-                   <div className="absolute inset-0 rounded-2xl border-2 border-white/40 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
+                   <div className="absolute inset-0 rounded-2xl border-2 border-white/40 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300" />
                  </button>
                </motion.div>
             </motion.div>
@@ -877,7 +815,7 @@ export default function App() {
             >
               <button 
                 onClick={startRound}
-                className="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
+                className="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl shadow-2xl transition-opacity hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
               >
                 <Play fill="currentColor" size={48} className="text-white" />
                 <span className="font-bold text-xl uppercase tracking-widest">Start Hand</span>
@@ -890,7 +828,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-xl p-6"
+              className="absolute inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6"
             >
               <div className="max-w-md w-full bg-neutral-900 border border-white/10 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-8 text-center">
                 <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center border border-emerald-500/20">
@@ -926,14 +864,14 @@ export default function App() {
                       setDealerHand({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
                       setStatus('idle');
                     }}
-                    className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-emerald-900/20 active:scale-95"
+                    className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-opacity shadow-xl shadow-emerald-900/20 active:scale-95"
                   >
                     New Shoe (Same Settings)
                   </button>
                   
                   <button 
                     onClick={() => setShowSettings(true)}
-                    className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 text-neutral-400"
+                    className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-opacity active:scale-95 text-neutral-400"
                   >
                     Change Settings
                   </button>
@@ -946,7 +884,7 @@ export default function App() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6"
+              className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
             >
               <div className="max-w-sm w-full bg-neutral-900 border border-white/10 p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col gap-4 sm:gap-6">
                 <div className="text-center">
@@ -959,7 +897,7 @@ export default function App() {
                     <div className="flex items-center gap-3 sm:gap-4">
                       <button 
                         onClick={() => setUserCountInput(prev => (parseInt(prev || "0") - 1).toString())}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shrink-0"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-opacity active:scale-95 shrink-0"
                       >
                         <Minus size={20} className="sm:w-6 sm:h-6" strokeWidth={3} />
                       </button>
@@ -985,7 +923,7 @@ export default function App() {
 
                       <button 
                         onClick={() => setUserCountInput(prev => (parseInt(prev || "0") + 1).toString())}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shrink-0"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-opacity active:scale-95 shrink-0"
                       >
                         <Plus size={20} className="sm:w-6 sm:h-6" strokeWidth={3} />
                       </button>
@@ -993,7 +931,7 @@ export default function App() {
 
                     <button 
                       onClick={(e) => verifyCount(e)}
-                      className="w-full py-4 sm:py-5 bg-emerald-600 hover:bg-emerald-500 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]"
+                      className="w-full py-4 sm:py-5 bg-emerald-600 hover:bg-emerald-500 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider transition-opacity shadow-lg shadow-emerald-900/20 active:scale-[0.98]"
                     >
                       Verify Count
                     </button>
@@ -1013,7 +951,7 @@ export default function App() {
                       </div>
                       <button 
                         onClick={continueAfterError}
-                        className="w-full py-4 sm:py-5 bg-gradient-to-r from-neutral-800 to-neutral-700 hover:from-neutral-700 hover:to-neutral-600 border border-white/5 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] flex items-center justify-center transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
+                        className="w-full py-4 sm:py-5 bg-gradient-to-r from-neutral-800 to-neutral-700 hover:from-neutral-700 hover:to-neutral-600 border border-white/5 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] flex items-center justify-center transition-opacity hover:scale-[1.02] active:scale-95 shadow-xl"
                       >
                         Continue Training
                       </button>
@@ -1053,8 +991,6 @@ export default function App() {
           )}
         </div>
       </footer>
-      {renderAboutModal()}
     </div>
   );
 }
-
