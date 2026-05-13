@@ -64,6 +64,11 @@ export default function App() {
     statusRef.current = status;
   }, [status]);
 
+  const safeSetStatus = useCallback((newStatus: GameStatus) => {
+    setStatus(newStatus);
+    statusRef.current = newStatus;
+  }, []);
+
   const initDeck = useCallback(() => {
     const newDeck = createDeck(deckCount);
     setDeck(newDeck);
@@ -71,9 +76,13 @@ export default function App() {
     setCardsInDiscard(0);
   }, [deckCount]);
 
+  // When deck count changes, reset to idle to prevent inconsistent state
   useEffect(() => {
     initDeck();
-  }, [initDeck]);
+    if (statusRef.current !== 'setup') {
+      resetGame('idle');
+    }
+  }, [deckCount, initDeck]);
 
   // Constant for card width/spacing
   const CARD_SPACING = 35;
@@ -102,7 +111,7 @@ export default function App() {
     // Check if we have enough cards for another round (estimate 8 cards per participant for 5-player safety)
     const minRequired = Math.max(25, (playerCount + 1) * 8);
     if (gameMode === 'advanced' && deckRef.current.length < minRequired) {
-      setStatus('shoe_depleted');
+      safeSetStatus('shoe_depleted');
       return;
     }
 
@@ -112,16 +121,8 @@ export default function App() {
       setCardsInDiscard(prev => prev + previousCardsCount);
     }
 
-    // Check if we have enough cards for another round (Safe threshold: roughly 7 cards per participant)
-    // This allows for more playing time while still preventing mid-hand depletion.
-    const safeThreshold = Math.max(25, (playerCount + 1) * 8);
-    if (gameMode === 'advanced' && deckRef.current.length < safeThreshold) {
-      setStatus('shoe_depleted');
-      return;
-    }
-
     const currentRoundId = ++roundIdRef.current;
-    setStatus('dealing');
+    safeSetStatus('dealing');
     
     // Local state tracking to avoid race conditions
     const currentHands: Hand[] = Array.from({ length: playerCount }, (_, i) => ({
@@ -156,7 +157,7 @@ export default function App() {
       // Safety check: if deck is empty despite reshuffle or in advanced mode
       if (deckRef.current.length === 0) {
         if (gameMode === 'advanced') {
-          setStatus('shoe_depleted');
+          safeSetStatus('shoe_depleted');
         }
         return null;
       }
@@ -165,7 +166,7 @@ export default function App() {
       const popped = newDeck.pop();
       if (!popped) {
         if (gameMode === 'advanced') {
-          setStatus('shoe_depleted');
+          safeSetStatus('shoe_depleted');
         }
         return null;
       }
@@ -216,7 +217,7 @@ export default function App() {
     }
 
     if (roundIdRef.current !== currentRoundId) return;
-    setStatus('playing');
+    safeSetStatus('playing');
 
     // Player Turns (Automated): Right to left
     for (let i = playerCount - 1; i >= 0; i--) {
@@ -226,7 +227,7 @@ export default function App() {
         const hand = currentHands[i];
         const dealerUpCard = currentDealer.cards[0];
         
-        if (hand && dealerUpCard && hand.score < 21 && getBasicStrategyAction(hand.score, dealerUpCard.rank) === 'H') {
+        if (hand && !hand.isBusted && dealerUpCard && hand.score < 21 && getBasicStrategyAction(hand.score, dealerUpCard.rank) === 'H') {
           await wait(speed / 1.5); // Snappier hit speed
           if (roundIdRef.current !== currentRoundId) return;
           const card = await localDeal(i);
@@ -286,11 +287,11 @@ export default function App() {
     
     await wait(waitTime);
     if (roundIdRef.current !== currentRoundId) return;
-    setStatus('checking_count');
-  }, [deckCount, gameMode, initDeck, playerCount, speed, status]);
+    safeSetStatus('checking_count');
+  }, [deckCount, gameMode, initDeck, playerCount, speed, safeSetStatus]);
 
   const startRound = useCallback(() => {
-    if (statusRef.current === 'idle') {
+    if (statusRef.current === 'idle' || statusRef.current === 'checking_count') {
       playRound();
     }
   }, [playRound]);
@@ -321,6 +322,7 @@ export default function App() {
     if (isCorrect) {
       setUserCountInput('');
       setFeedback({ show: false, correct: false, message: '' });
+      // Start next round directly without flickering to 'idle'
       startRound();
     } else {
       setFeedback({ show: true, correct: false, message: `Incorrect. The running count is ${runningCount}.` });
@@ -330,6 +332,7 @@ export default function App() {
   const continueAfterError = useCallback(() => {
     setUserCountInput('');
     setFeedback({ show: false, correct: false, message: '' });
+    // Start next round directly without flickering to 'idle'
     startRound();
   }, [startRound]);
 
@@ -356,7 +359,7 @@ export default function App() {
     
     setPlayerHands([]);
     setDealerHand({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-    setStatus(targetStatus);
+    safeSetStatus(targetStatus);
     setFeedback({ show: false, correct: false, message: '' });
     setStats({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
     setCardsInDiscard(0);
