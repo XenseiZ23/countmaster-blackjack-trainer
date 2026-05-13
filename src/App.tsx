@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, RotateCcw, Settings, CheckCircle2, XCircle, SkipForward, Users, Gauge, Trophy, Plus, Minus, Zap, Database, Pause, Clover } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Card, GameStatus, Hand, GameStats, GameMode } from './types';
 import { createDeck, calculateHandScore, isBlackjack, getBasicStrategyAction } from './lib/blackjack';
 import { PlayingCard } from './components/PlayingCard';
@@ -412,10 +411,10 @@ export default function App() {
             )}
             
             <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">About</Link>
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Support</Link>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">About</a>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Support</a>
               <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</Link>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</a>
             </div>
             
             <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
