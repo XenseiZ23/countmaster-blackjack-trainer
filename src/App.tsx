@@ -38,16 +38,26 @@ export default function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [cardsInDiscard, setCardsInDiscard] = useState(0);
   
-  // Refs to track state for timeouts
+  // Refs to track state for timeouts and avoid dependency loops
   const deckRef = useRef<Card[]>([]);
   const currentRunningCount = useRef(0);
   const roundIdRef = useRef(0);
   const isPausedRef = useRef(false);
+  const playerHandsRef = useRef<Hand[]>([]);
+  const dealerHandRef = useRef<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
 
-  // Keep ref in sync
+  // Keep refs in sync
   useEffect(() => {
     isPausedRef.current = isPaused;
   }, [isPaused]);
+
+  useEffect(() => {
+    playerHandsRef.current = playerHands;
+  }, [playerHands]);
+
+  useEffect(() => {
+    dealerHandRef.current = dealerHand;
+  }, [dealerHand]);
 
   const initDeck = useCallback(() => {
     const newDeck = createDeck(deckCount);
@@ -90,9 +100,11 @@ export default function App() {
       return;
     }
 
-    // Add previous round's cards to discard tray
-    const previousCardsCount = dealerHand.cards.length + playerHands.reduce((acc, h) => acc + h.cards.length, 0);
-    setCardsInDiscard(prev => prev + previousCardsCount);
+    // Add previous round's cards to discard tray using refs to ensure latest values are used
+    const previousCardsCount = dealerHandRef.current.cards.length + playerHandsRef.current.reduce((acc, h) => acc + h.cards.length, 0);
+    if (previousCardsCount > 0) {
+      setCardsInDiscard(prev => prev + previousCardsCount);
+    }
 
     // Check if we have enough cards for another round (Safe threshold: roughly 7 cards per participant)
     // This allows for more playing time while still preventing mid-hand depletion.
@@ -127,6 +139,9 @@ export default function App() {
     setFeedback({ show: false, correct: false, message: '' });
 
     const localDeal = async (targetId: number, reveal: boolean = true) => {
+      // Cancellation check inside localDeal
+      if (roundIdRef.current !== currentRoundId) return null;
+
       // Reshuffle logic
       if (gameMode === 'standard' && (deckRef.current.length === 0 || deckRef.current.length < (deckCount * 52 * 0.2))) {
         initDeck();
@@ -173,10 +188,12 @@ export default function App() {
       for (let i = playerCount - 1; i >= 0; i--) {
         if (roundIdRef.current !== currentRoundId) return;
         await wait(speed / 2.5); // Tighter timing for fluidity
+        if (roundIdRef.current !== currentRoundId) return;
         await localDeal(i);
       }
       if (roundIdRef.current !== currentRoundId) return;
       await wait(speed / 2.5); // Tighter timing for fluidity
+      if (roundIdRef.current !== currentRoundId) return;
       await localDeal(-1, round === 0);
     }
 
@@ -193,11 +210,14 @@ export default function App() {
         
         if (hand && dealerUpCard && hand.score < 21 && getBasicStrategyAction(hand.score, dealerUpCard.rank) === 'H') {
           await wait(speed / 1.5); // Snappier hit speed
+          if (roundIdRef.current !== currentRoundId) return;
           await localDeal(i);
         } else {
-          // If busted in advanced mode, clear cards after a short delay
+          // If busted in advanced mode, clear cards after a short delay and add to discard tray
           if (hand && hand.isBusted && gameMode === 'advanced') {
             await wait(speed);
+            if (roundIdRef.current !== currentRoundId) return;
+            setCardsInDiscard(prev => prev + hand.cards.length);
             hand.cards = [];
             setPlayerHands([...currentHands]);
           }
@@ -211,6 +231,7 @@ export default function App() {
     await wait(speed / 1.5);
     
     // Reveal Hole Card
+    if (roundIdRef.current !== currentRoundId) return;
     if (currentDealer.cards.length >= 2 && !currentDealer.cards[1].isRevealed) {
       const holeCard = { ...currentDealer.cards[1], isRevealed: true };
       const newDealerCards = [currentDealer.cards[0], holeCard, ...currentDealer.cards.slice(2)];
@@ -231,6 +252,7 @@ export default function App() {
     while (currentDealer.score < 17) {
       if (roundIdRef.current !== currentRoundId) return;
       await localDeal(-1);
+      if (roundIdRef.current !== currentRoundId) return;
       await wait(speed / 1.5);
     }
 
@@ -243,6 +265,7 @@ export default function App() {
     const waitTime = speed * Math.max(0.4, dynamicMultiplier);
     
     await wait(waitTime);
+    if (roundIdRef.current !== currentRoundId) return;
     setStatus('checking_count');
   }, [deckCount, gameMode, initDeck, playerCount, speed]);
 
@@ -732,17 +755,17 @@ export default function App() {
             })}
           </div>
 
-          {/* Discard Tray (Advanced Mode) - Essential for professional practice to estimate remaining decks */}
-          {gameMode === 'advanced' && !isPaused && (
+          {/* Discard Tray - Visible in both modes to show deck penetration and progress */}
+          {!isPaused && (
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="absolute top-20 sm:top-28 left-4 sm:left-12 z-10 flex flex-col items-center gap-2 scale-75 sm:scale-110 origin-top-left group cursor-help transition-opacity"
             >
               {/* Discard Tray Container - Transparent Plastic/Acrylic look */}
-              <div className="relative w-20 h-24 bg-white/5 border border-white/20 rounded-t-sm shadow-2xl overflow-hidden perspective-1000">
+              <div className="relative w-20 h-24 bg-white/10 border border-white/30 rounded-t-sm shadow-2xl overflow-hidden perspective-1000">
                 {/* Back side of the tray */}
-                <div className="absolute inset-0 bg-neutral-900/40" />
+                <div className="absolute inset-0 bg-neutral-900/60" />
                 
                 {/* Bottom Base */}
                 <div className="absolute bottom-0 inset-x-0 h-2 bg-neutral-900 border-t border-white/10" />
