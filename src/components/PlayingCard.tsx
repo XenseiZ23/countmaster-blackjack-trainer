@@ -22,7 +22,7 @@ const suitColors = {
   spades: 'text-gray-900',
 };
 
-export const PlayingCard: React.FC<PlayingCardProps> = ({ card, index }) => {
+export const PlayingCard = React.memo(({ card, index }: PlayingCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -200, x: 100, rotate: 15 }}
@@ -80,4 +80,4 @@ export const PlayingCard: React.FC<PlayingCardProps> = ({ card, index }) => {
       </AnimatePresence>
     </motion.div>
   );
-};
+});
