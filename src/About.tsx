@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Clover, Play, ChevronLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function About() {
   return (
@@ -12,10 +13,10 @@ export default function About() {
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] pointer-events-none" />
         
-        <a href="/" className="inline-flex items-center gap-2 text-neutral-500 hover:text-emerald-400 transition-colors mb-8 group">
+        <Link to="/" className="inline-flex items-center gap-2 text-neutral-500 hover:text-emerald-400 transition-colors mb-8 group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs font-bold uppercase tracking-widest">Back to Trainer</span>
-        </a>
+        </Link>
 
         <div className="space-y-10 relative">
           <div className="space-y-2">

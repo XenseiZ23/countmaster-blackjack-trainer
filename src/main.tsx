@@ -1,18 +1,17 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import App from './App.tsx';
+import About from './About.tsx';
 import './index.css';
-
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { inject } from "@vercel/analytics";
-
-inject();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <>
-      <App />
-      <SpeedInsights />
-    </>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </HashRouter>
   </StrictMode>,
 );
