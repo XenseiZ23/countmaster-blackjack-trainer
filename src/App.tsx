@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, RotateCcw, Settings, CheckCircle2, XCircle, SkipForward, Users, Gauge, Trophy, Plus, Minus, Zap, Database, Pause, Clover } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Card, GameStatus, Hand, GameStats, GameMode } from './types';
 import { createDeck, calculateHandScore, isBlackjack, getBasicStrategyAction } from './lib/blackjack';
 import { PlayingCard } from './components/PlayingCard';
 
-const MemoPlayingCard = React.memo(PlayingCard);
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -66,12 +64,17 @@ export default function App() {
   const CARD_SPACING = 35;
 
   const wait = (ms: number) => new Promise(resolve => {
+    let remaining = ms;
+    const startTime = Date.now();
+    
     const checkPause = () => {
-      // If we are in the middle of a wait and it gets paused, we must keep waiting
       if (isPausedRef.current) {
-        setTimeout(checkPause, 50);
+        // If pause happened, we adjust remaining time for when we resume
+        setTimeout(checkPause, 100);
       } else {
-        setTimeout(resolve, ms);
+        const elapsed = Date.now() - startTime;
+        const actualRemaining = Math.max(0, ms - elapsed);
+        setTimeout(resolve, actualRemaining);
       }
     };
     checkPause();
@@ -206,16 +209,19 @@ export default function App() {
     // Dealer Turn
     if (roundIdRef.current !== currentRoundId) return;
     await wait(speed / 1.5);
+    
     // Reveal Hole Card
-    if (currentDealer.cards.length >= 2) {
+    if (currentDealer.cards.length >= 2 && !currentDealer.cards[1].isRevealed) {
       const holeCard = { ...currentDealer.cards[1], isRevealed: true };
-      const newDealerCards = [...currentDealer.cards];
-      newDealerCards[1] = holeCard;
+      const newDealerCards = [currentDealer.cards[0], holeCard, ...currentDealer.cards.slice(2)];
+      
       currentDealer.cards = newDealerCards;
+      currentDealer.score = calculateHandScore(newDealerCards);
+      currentDealer.isBusted = currentDealer.score > 21;
+      currentDealer.isBlackjack = isBlackjack(newDealerCards);
       
       currentRunningCount.current += holeCard.countValue;
       setRunningCount(currentRunningCount.current);
-      currentDealer.score = calculateHandScore(currentDealer.cards);
       setDealerHand({ ...currentDealer });
     }
     
@@ -238,7 +244,7 @@ export default function App() {
     
     await wait(waitTime);
     setStatus('checking_count');
-  }, [dealerHand.cards.length, deckCount, gameMode, initDeck, playerHands, playerCount, speed, status]);
+  }, [deckCount, gameMode, initDeck, playerCount, speed]);
 
   const startRound = useCallback(() => {
     playRound();
@@ -405,10 +411,10 @@ export default function App() {
             )}
             
             <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">About</Link>
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Support</Link>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">About</a>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Support</a>
               <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-              <Link to="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</Link>
+              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</a>
             </div>
             
             <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
@@ -683,7 +689,7 @@ export default function App() {
           <div className="relative z-10 flex flex-col items-center mt-6 sm:mt-8 scale-[0.75] sm:scale-95 md:scale-100">
             <div className="flex gap-1 sm:gap-2 md:gap-4 min-h-[90px] sm:min-h-[140px] md:min-h-[160px] justify-center px-4 overflow-visible">
               {dealerHand.cards.map((card, i) => (
-                <MemoPlayingCard key={`${card.id}-${i}`} card={card} index={i} />
+                <PlayingCard key={`${card.id}-${i}`} card={card} index={i} />
               ))}
             </div>
           </div>
@@ -716,7 +722,7 @@ export default function App() {
                           transform: `rotate(${(i - (hand.cards.length - 1) / 2) * 2}deg)`
                         }}
                       >
-                        <MemoPlayingCard card={card} index={i} />
+                        <PlayingCard card={card} index={i} />
                       </div>
                     ))}
                   </div>
