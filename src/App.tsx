@@ -411,10 +411,10 @@ export default function App() {
             )}
             
             <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
-              <a href="/about" className="hover:text-white transition-colors cursor-pointer">About</a>
-              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Support</a>
+              <a href="#" className="hover:text-white transition-colors cursor-pointer">About</a>
+              <a href="#" className="hover:text-white transition-colors cursor-pointer">Support</a>
               <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-              <a href="/about" className="hover:text-white transition-colors cursor-pointer">Feedback</a>
+              <a href="#" className="hover:text-white transition-colors cursor-pointer">Feedback</a>
             </div>
             
             <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 max-w-sm mx-auto">
