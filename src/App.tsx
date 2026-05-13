@@ -45,6 +45,7 @@ export default function App() {
   const isPausedRef = useRef(false);
   const playerHandsRef = useRef<Hand[]>([]);
   const dealerHandRef = useRef<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
+  const statusRef = useRef<GameStatus>('setup');
 
   // Keep refs in sync
   useEffect(() => {
@@ -58,6 +59,10 @@ export default function App() {
   useEffect(() => {
     dealerHandRef.current = dealerHand;
   }, [dealerHand]);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
 
   const initDeck = useCallback(() => {
     const newDeck = createDeck(deckCount);
@@ -91,10 +96,11 @@ export default function App() {
   });
 
   const playRound = useCallback(async () => {
-    if (status === 'dealing' || status === 'playing' || status === 'shoe_depleted') return;
+    // Use ref check to avoid stale closure issues during rapid status transitions
+    if (statusRef.current === 'dealing' || statusRef.current === 'playing' || statusRef.current === 'shoe_depleted') return;
     
-    // Check if we have enough cards for another round (estimate 6 cards per participant)
-    const minRequired = (playerCount + 1) * 6;
+    // Check if we have enough cards for another round (estimate 8 cards per participant for 5-player safety)
+    const minRequired = Math.max(25, (playerCount + 1) * 8);
     if (gameMode === 'advanced' && deckRef.current.length < minRequired) {
       setStatus('shoe_depleted');
       return;
@@ -108,7 +114,7 @@ export default function App() {
 
     // Check if we have enough cards for another round (Safe threshold: roughly 7 cards per participant)
     // This allows for more playing time while still preventing mid-hand depletion.
-    const safeThreshold = Math.max(20, (playerCount + 1) * 7);
+    const safeThreshold = Math.max(25, (playerCount + 1) * 8);
     if (gameMode === 'advanced' && deckRef.current.length < safeThreshold) {
       setStatus('shoe_depleted');
       return;
@@ -142,19 +148,29 @@ export default function App() {
       // Cancellation check inside localDeal
       if (roundIdRef.current !== currentRoundId) return null;
 
-      // Reshuffle logic
+      // Reshuffle logic for standard mode
       if (gameMode === 'standard' && (deckRef.current.length === 0 || deckRef.current.length < (deckCount * 52 * 0.2))) {
         initDeck();
       }
       
-      // In advanced mode, we rely on the pre-round threshold check.
-      // If we somehow run out mid-hand (highly unlikely with >50 card threshold), we return null to stop.
-      if (deckRef.current.length === 0) return null;
+      // Safety check: if deck is empty despite reshuffle or in advanced mode
+      if (deckRef.current.length === 0) {
+        if (gameMode === 'advanced') {
+          setStatus('shoe_depleted');
+        }
+        return null;
+      }
       
       const newDeck = [...deckRef.current];
-      const card = { ...newDeck.pop()! }; // Create a copy of the card object
-      if (!card) return null;
+      const popped = newDeck.pop();
+      if (!popped) {
+        if (gameMode === 'advanced') {
+          setStatus('shoe_depleted');
+        }
+        return null;
+      }
       
+      const card = { ...popped };
       card.isRevealed = reveal;
       deckRef.current = newDeck;
       setDeck(newDeck);
@@ -189,12 +205,14 @@ export default function App() {
         if (roundIdRef.current !== currentRoundId) return;
         await wait(speed / 2.5); // Tighter timing for fluidity
         if (roundIdRef.current !== currentRoundId) return;
-        await localDeal(i);
+        const card = await localDeal(i);
+        if (!card) return;
       }
       if (roundIdRef.current !== currentRoundId) return;
       await wait(speed / 2.5); // Tighter timing for fluidity
       if (roundIdRef.current !== currentRoundId) return;
-      await localDeal(-1, round === 0);
+      const card = await localDeal(-1, round === 0);
+      if (!card) return;
     }
 
     if (roundIdRef.current !== currentRoundId) return;
@@ -211,7 +229,8 @@ export default function App() {
         if (hand && dealerUpCard && hand.score < 21 && getBasicStrategyAction(hand.score, dealerUpCard.rank) === 'H') {
           await wait(speed / 1.5); // Snappier hit speed
           if (roundIdRef.current !== currentRoundId) return;
-          await localDeal(i);
+          const card = await localDeal(i);
+          if (!card) return;
         } else {
           // If busted in advanced mode, clear cards after a short delay and add to discard tray
           if (hand && hand.isBusted && gameMode === 'advanced') {
@@ -251,7 +270,8 @@ export default function App() {
 
     while (currentDealer.score < 17) {
       if (roundIdRef.current !== currentRoundId) return;
-      await localDeal(-1);
+      const card = await localDeal(-1);
+      if (!card) return;
       if (roundIdRef.current !== currentRoundId) return;
       await wait(speed / 1.5);
     }
@@ -267,10 +287,12 @@ export default function App() {
     await wait(waitTime);
     if (roundIdRef.current !== currentRoundId) return;
     setStatus('checking_count');
-  }, [deckCount, gameMode, initDeck, playerCount, speed]);
+  }, [deckCount, gameMode, initDeck, playerCount, speed, status]);
 
   const startRound = useCallback(() => {
-    playRound();
+    if (statusRef.current === 'idle') {
+      playRound();
+    }
   }, [playRound]);
 
   const verifyCount = (e?: React.KeyboardEvent | React.MouseEvent) => {
@@ -322,17 +344,23 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [feedback.show, continueAfterError]);
 
-  const resetGame = () => {
-    roundIdRef.current++; // Cancel current dealing
+  const resetGame = (targetStatus: GameStatus = 'setup') => {
+    roundIdRef.current++; // Cancel current round loop
     setRunningCount(0);
     currentRunningCount.current = 0;
-    initDeck();
+    
+    // Explicitly re-init deck to ensure it's fresh for the new state
+    const newDeck = createDeck(deckCount);
+    setDeck(newDeck);
+    deckRef.current = newDeck;
+    
     setPlayerHands([]);
     setDealerHand({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-    setStatus('setup');
+    setStatus(targetStatus);
     setFeedback({ show: false, correct: false, message: '' });
     setStats({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
     setCardsInDiscard(0);
+    setIsPaused(false);
   };
 
     // Speed levels definition
@@ -425,7 +453,12 @@ export default function App() {
           <div className="text-center space-y-4 relative">
             {showSettings && (
               <button 
-                onClick={() => setShowSettings(false)}
+                onClick={() => {
+                  if (status === 'setup') {
+                    resetGame('idle');
+                  }
+                  setShowSettings(false);
+                }}
                 className="absolute -top-6 -right-6 p-4 text-neutral-500 hover:text-white transition-colors"
                 title="Close Settings"
               >
@@ -508,8 +541,8 @@ export default function App() {
               <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 uppercase tracking-widest text-[10px] font-bold">
                 <Users size={14} /> Players at Table
               </div>
-              <div className="grid grid-cols-4 gap-3">
-                {[1, 2, 3, 5].map(num => (
+              <div className="grid grid-cols-5 gap-3">
+                {[1, 2, 3, 4, 5].map(num => (
                   <button
                     key={num}
                     onClick={() => setPlayerCount(num)}
@@ -618,10 +651,7 @@ export default function App() {
           <div className="pt-2 flex flex-col gap-4">
             <button 
               onClick={() => {
-                if (status !== 'setup') {
-                  resetGame();
-                }
-                setStatus('idle');
+                resetGame('idle');
                 setShowSettings(false);
               }}
               className="w-full py-6 bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 rounded-[2rem] text-xl font-black uppercase tracking-wider shadow-2xl shadow-emerald-900/40 transition-opacity hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4"
@@ -632,7 +662,7 @@ export default function App() {
             {showSettings && (
               <button 
                 onClick={() => {
-                  resetGame();
+                  resetGame('setup');
                   setShowSettings(false);
                 }}
                 className="w-full py-4 text-neutral-500 hover:text-red-400 transition-colors uppercase tracking-[0.2em] font-bold text-xs flex items-center justify-center gap-2"
@@ -885,14 +915,7 @@ export default function App() {
 
                 <div className="grid grid-cols-1 gap-4 w-full">
                   <button 
-                    onClick={() => {
-                      setRunningCount(0);
-                      currentRunningCount.current = 0;
-                      initDeck();
-                      setPlayerHands([]);
-                      setDealerHand({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-                      setStatus('idle');
-                    }}
+                    onClick={() => resetGame('idle')}
                     className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-opacity shadow-xl shadow-emerald-900/20 active:scale-95"
                   >
                     New Shoe (Same Settings)
