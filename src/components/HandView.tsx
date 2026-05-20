@@ -10,7 +10,7 @@ interface HandViewProps {
   cardSpacing: number;
 }
 
-export const HandView = ({ hand, isMobile, scaleClass, cardSpacing }: HandViewProps) => {
+export const HandView: React.FC<HandViewProps> = ({ hand, isMobile, scaleClass, cardSpacing }) => {
   const currentCardCount = hand.cards.length;
   // Compress card spacing if hand has many cards to prevent overflow with neighbors
   const spacingMultiplier = currentCardCount > 5 ? 0.5 : (currentCardCount > 4 ? 0.7 : (currentCardCount > 3 ? 0.85 : 1));

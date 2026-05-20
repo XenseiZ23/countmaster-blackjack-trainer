@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { XCircle, Play, RotateCcw, Zap, Database, Users, Gauge } from 'lucide-react';
 import { GameMode, GameStatus } from '../types';
 
@@ -85,7 +86,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
           )}
           
           <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-600 mb-4">
-            <span className="hover:text-white transition-colors cursor-pointer">About</span>
+            <Link to="/about" className="hover:text-white transition-colors cursor-pointer">About</Link>
             <span className="hover:text-white transition-colors cursor-pointer">Support</span>
             <a href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
             <span className="hover:text-white transition-colors cursor-pointer">Feedback</span>

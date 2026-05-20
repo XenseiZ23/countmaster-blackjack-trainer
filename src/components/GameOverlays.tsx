@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Clover } from 'lucide-react';
 import { FeedbackPanel } from './FeedbackPanel';
 import { GameStatus, Card } from '../types';

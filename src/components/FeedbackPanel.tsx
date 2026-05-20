@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { XCircle, Plus, Minus, RotateCcw } from 'lucide-react';
 
 interface FeedbackPanelProps {

@@ -1,9 +1,6 @@
 {
   "name": "CountMaster Blackjack Trainer",
-  "short_name": "CountMaster",
   "description": "Master card counting and memory in a high-fidelity blackjack simulator.",
-  "theme_color": "#059669",
-  "background_color": "#171717",
-  "display": "standalone",
-  "start_url": "/"
+  "requestFramePermissions": [],
+  "majorCapabilities": []
 }
