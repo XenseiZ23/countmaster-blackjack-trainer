@@ -6,7 +6,7 @@ CountMaster is a high-fidelity, desktop-optimized Blackjack Card Counting Simula
 
 ---
 
-## 🃏 Core Design Philosophy
+##  Core Design Philosophy
 
 *   **Zero-Noise Interface:** Focused strictly on sensory training. No advertisements, no transactional clutter, and no visual-distraction layers.
 *   **Aesthetic Fidelity:** Dark-felt radial emerald gradients simulate a premium, high-stakes physical room environment.
@@ -15,7 +15,7 @@ CountMaster is a high-fidelity, desktop-optimized Blackjack Card Counting Simula
 
 ---
 
-## ⚡ Main Capabilities
+##  Main Capabilities
 
 ### 1. Advanced Simulation Modes
 *   **Standard Mode (Infinite Shoe):** Continuous randomized card distribution. Focuses purely on long-term endurance, instant reflex-checking, and raw numerical retention.
@@ -28,7 +28,7 @@ CountMaster is a high-fidelity, desktop-optimized Blackjack Card Counting Simula
 
 ---
 
-## 🎛️ Mathematical Core: The Hi-Lo Strategy
+##  Mathematical Core: The Hi-Lo Strategy
 
 CountMaster operates using the **Hi-Lo system**—the globally recognized system for card estimation. Every single card passing across the felt holds a assigned count-value:
 
@@ -44,7 +44,7 @@ CountMaster operates using the **Hi-Lo system**—the globally recognized system
 
 ---
 
-## 🛠️ Stack & Architecture
+##  Stack & Architecture
 
 CountMaster is built utilizing professional-grade, modern front-end technologies focusing on high performance and responsive render pipelines:
 
@@ -57,7 +57,7 @@ CountMaster is built utilizing professional-grade, modern front-end technologies
 
 ---
 
-## 📦 Local Installation & Development
+##  Local Installation & Development
 
 To clone, test, and run CountMaster inside your local development sandbox:
 
@@ -97,7 +97,7 @@ To clone, test, and run CountMaster inside your local development sandbox:
 
 ---
 
-## 🚀 Production Deployment (Vercel Configuration)
+##  Production Deployment (Vercel Configuration)
 
 CountMaster is customized for zero-configuration, seamless deployment on **Vercel** or alternative cloud edge routers.
 
@@ -116,6 +116,6 @@ The repository includes a standalone `vercel.json` rewrite configuration at the 
 
 ---
 
-## ⚖️ Educational Disclosure
+##  Educational Disclosure
 
 This platform is developed exclusively as a **cognitive and memory-training training program**. It contains **no gambling elements, no currency conversions, and no actual risk models**. CountMaster does not encourage, facilitate, or endorse real-money casino gaming. Memory training and basic strategy adherence are mathematical constructs and do not guarantee profits or eliminate the house edge in live land-based casinos. Play wisely.
