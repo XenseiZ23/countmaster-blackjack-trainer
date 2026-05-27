@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clover, ArrowLeft, BookOpen, ShieldAlert, Award, Terminal, Play } from 'lucide-react';
+import { Clover, ArrowLeft, BookOpen, ShieldAlert, Award, Sparkles, Play } from 'lucide-react';
 
 export default function About() {
   return (
@@ -142,26 +142,35 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Tech Stack Specs */}
+        {/* Tactical Pro Tips */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[1.5rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6"
+          className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[1.5rem] p-6 sm:p-8 flex flex-col gap-6"
         >
-          <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row">
-            <div className="w-12 h-12 bg-neutral-900 border border-white/10 rounded-2xl flex items-center justify-center">
-              <Terminal size={22} className="text-neutral-400" />
+          <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row border-b border-white/5 pb-4">
+            <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-center">
+              <Sparkles size={22} className="text-emerald-400" />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">Clean Tech Stack & Performance</h3>
-              <p className="text-[11px] text-neutral-400 mt-1 leading-relaxed">Built with React, Vite, Tailwind CSS, and Motion to achieve hardware-accelerated drawing fluidities.</p>
+              <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">Tactical Training Tips</h3>
+              <p className="text-[11px] text-neutral-400 mt-1 leading-relaxed">Boost your cognition and reflexes with these professional training guidelines.</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 bg-white/5 border border-white/5 rounded text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest">React 19</span>
-            <span className="px-3 py-1 bg-white/5 border border-white/5 rounded text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest">TSX</span>
-            <span className="px-3 py-1 bg-white/5 border border-white/5 rounded text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest">Tailwind</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-neutral-400 leading-relaxed">
+            <div className="space-y-1">
+              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-400">1. Adjust dealing speed</div>
+              <p>Start with the "Slow" setting to smoothly reinforce mental addition, then dial it up to "Intermediate" or "Fast" as your reaction times sharpen.</p>
+            </div>
+            <div className="space-y-1">
+              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-400">2. Track the discard tray</div>
+              <p>In Advanced Mode, observe card penetration in the discard tray to convert your running count to True Count. Knowing remaining decks is key to success!</p>
+            </div>
+            <div className="space-y-1">
+              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-400">3. Execute basic strategy</div>
+              <p>Counting cards is only effective when paired with flawless action. Play each hand logically in accordance with standard blackjack basic strategy rules.</p>
+            </div>
           </div>
         </motion.div>
 
