@@ -78,6 +78,17 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
         className="max-w-2xl w-full bg-neutral-800/40 backdrop-blur-sm border border-white/10 rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-12 shadow-2xl flex flex-col gap-6 sm:gap-12"
       >
         <div className="text-center space-y-4 relative">
+          {status === 'setup' && (
+            <Link 
+              to="/" 
+              className="absolute -top-6 -left-6 p-4 text-neutral-500 hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-xs font-black uppercase tracking-wider select-none"
+              title="Back to Main Menu"
+            >
+              <ArrowLeft size={16} className="stroke-[3]" />
+              <span>Menu</span>
+            </Link>
+          )}
+
           {showSettings && (
             <button 
               onClick={() => {
@@ -250,15 +261,6 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               >
                 {status === 'setup' ? 'Start Training' : 'Apply & Return'} <Play fill="currentColor" size={24} />
               </button>
-
-              {status === 'setup' && (
-                <Link
-                  to="/"
-                  className="w-full py-4 text-neutral-400 hover:text-white hover:bg-white/5 border border-white/5 hover:border-white/10 rounded-[1.5rem] transition-all uppercase tracking-[0.2em] font-extrabold text-[10px] flex items-center justify-center gap-2 mt-2"
-                >
-                  <ArrowLeft size={14} className="stroke-[2.5]" /> Back to Main Menu
-                </Link>
-              )}
 
               {showSettings && (
                 <button 
