@@ -78,31 +78,37 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
         className="max-w-2xl w-full bg-neutral-800/40 backdrop-blur-sm border border-white/10 rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-12 shadow-2xl flex flex-col gap-6 sm:gap-12"
       >
         <div className="text-center space-y-4 relative">
-          {status === 'setup' && (
-            <Link 
-              to="/" 
-              className="absolute -top-6 -left-6 p-4 text-neutral-500 hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-xs font-black uppercase tracking-wider select-none"
-              title="Back to Main Menu"
-            >
-              <ArrowLeft size={16} className="stroke-[3]" />
-              <span>Menu</span>
-            </Link>
-          )}
+          {/* Top navigation row: Menu / Back on Left, and Close button on Right */}
+          <div className="flex items-center justify-between w-full select-none pb-2">
+            {status === 'setup' ? (
+              <Link 
+                to="/" 
+                className="text-neutral-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest"
+                title="Back to Main Menu"
+              >
+                <ArrowLeft size={14} className="stroke-[3.5]" />
+                <span>Menu</span>
+              </Link>
+            ) : (
+              <div /> // Spacer if not setup
+            )}
 
-          {showSettings && (
-            <button 
-              onClick={() => {
-                if (status === 'setup') resetGame('idle');
-                setShowSettings(false);
-              }}
-              className="absolute -top-6 -right-6 p-4 text-neutral-500 hover:text-white transition-colors"
-              title="Close Settings"
-            >
-              <XCircle size={32} />
-            </button>
-          )}
+            {showSettings && (
+              <button 
+                onClick={() => {
+                  if (status === 'setup') resetGame('idle');
+                  setShowSettings(false);
+                }}
+                className="text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest"
+                title="Close Settings"
+              >
+                <span>Close</span>
+                <XCircle size={18} />
+              </button>
+            )}
+          </div>
           
-          <div className="flex items-center justify-center gap-6 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-500 mb-4 select-none">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-500 select-none pb-2 border-b border-white/5">
             <Link to="/about" className="text-neutral-500 hover:text-white transition-colors cursor-pointer">ABOUT</Link>
             <button 
               type="button"
