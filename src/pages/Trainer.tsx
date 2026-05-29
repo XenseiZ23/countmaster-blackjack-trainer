@@ -8,7 +8,7 @@ import { HandView } from '../components/HandView';
 import { DealerHandView } from '../components/DealerHandView';
 import { GameOverlays } from '../components/GameOverlays';
 
-export default function HomePage() {
+export default function Trainer() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -386,7 +386,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col overflow-hidden transform-gpu">
+    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col overflow-hidden transform-gpu animate-fadeIn">
       <GameHeader
         stats={stats}
         totalRounds={stats.totalRounds}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clover, ArrowLeft, BookOpen, ShieldAlert, Award, Sparkles, Play } from 'lucide-react';
+import { ArrowLeft, BookOpen, ShieldAlert, Award, Sparkles, Play } from 'lucide-react';
+import { FluorescentCards } from '../components/FluorescentCards';
 
 export default function About() {
   return (
@@ -23,9 +24,7 @@ export default function About() {
           <span>Back to Game</span>
         </Link>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center">
-            <Clover size={18} className="text-emerald-500 fill-emerald-500/20" />
-          </div>
+          <FluorescentCards size="sm" />
           <span className="text-xs font-black uppercase tracking-widest text-emerald-400">CountMaster Trainer</span>
         </div>
       </header>
@@ -63,9 +62,7 @@ export default function About() {
             className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[1.5rem] p-6 sm:p-8 flex flex-col gap-4 shadow-xl"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
-                <Clover size={20} className="text-emerald-400" />
-              </div>
+              <FluorescentCards size="sm" />
               <h2 className="text-lg font-bold uppercase tracking-tight text-white">The Application</h2>
             </div>
             <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
@@ -191,9 +188,15 @@ export default function About() {
       </main>
 
       {/* Footer Info */}
-      <footer className="relative z-10 p-4 border-t border-white/5 bg-black/60 text-[10px] uppercase tracking-wider text-neutral-500 flex flex-col sm:flex-row gap-2 justify-between items-center shrink-0 text-center sm:text-left">
-        <div>CountMaster Trainer • Pure Educational Cognitive Development</div>
-        <div>NO CHIPS • NO DEPOSIT • NO RISK</div>
+      <footer className="relative z-10 p-5 sm:p-6 bg-black/60 border-t border-white/5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-medium select-none flex flex-col sm:flex-row justify-between items-center shrink-0 gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
+          <span>© 2026 COUNTMASTER PROJECT. ALL RIGHTS RESERVED.</span>
+          <span className="hidden sm:inline text-white/5">|</span>
+          <div className="text-emerald-500/80 font-bold">EDUCATIONAL ADVANCED TRAINING</div>
+        </div>
+        <div className="text-center sm:text-right text-[8px] sm:text-[9px] text-neutral-600 tracking-wider max-w-lg leading-relaxed uppercase">
+          NO RISK • NO DEPOSIT • PURE COGNITIVE REFLEX DEVELOMENT
+        </div>
       </footer>
     </div>
   );

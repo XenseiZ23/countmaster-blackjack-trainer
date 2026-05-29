@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Clover } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { FeedbackPanel } from './FeedbackPanel';
 import { GameStatus, Card } from '../types';
+import { FluorescentCards } from './FluorescentCards';
 
 interface GameOverlaysProps {
   status: GameStatus;
@@ -94,8 +95,8 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
           className="absolute inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6"
         >
           <div className="max-w-md w-full bg-neutral-900 border border-white/10 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-8 text-center">
-            <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center border border-emerald-500/20">
-              <Clover size={40} className="text-emerald-500 fill-emerald-500/20" />
+            <div className="w-20 h-20 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl flex items-center justify-center shadow-lg">
+              <FluorescentCards size="lg" />
             </div>
             
             <div className="space-y-4">

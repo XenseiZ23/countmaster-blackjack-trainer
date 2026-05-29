@@ -251,6 +251,15 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
                 {status === 'setup' ? 'Start Training' : 'Apply & Return'} <Play fill="currentColor" size={24} />
               </button>
 
+              {status === 'setup' && (
+                <Link
+                  to="/"
+                  className="w-full py-4 text-neutral-400 hover:text-white hover:bg-white/5 border border-white/5 hover:border-white/10 rounded-[1.5rem] transition-all uppercase tracking-[0.2em] font-extrabold text-[10px] flex items-center justify-center gap-2 mt-2"
+                >
+                  <ArrowLeft size={14} className="stroke-[2.5]" /> Back to Main Menu
+                </Link>
+              )}
+
               {showSettings && (
                 <button 
                   onClick={() => { resetGame('setup'); setShowSettings(false); }}

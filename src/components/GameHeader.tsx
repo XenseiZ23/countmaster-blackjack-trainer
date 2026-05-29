@@ -1,7 +1,9 @@
 
 import React from 'react';
-import { Clover, Trophy, Play, Pause, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trophy, Play, Pause, Settings, ArrowLeft } from 'lucide-react';
 import { GameStats } from '../types';
+import { FluorescentCards } from './FluorescentCards';
 
 interface GameHeaderProps {
   stats: GameStats;
@@ -23,17 +25,29 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   setShowSettings
 }) => {
   return (
-    <header className="p-4 flex justify-between items-center bg-black/40 backdrop-blur-sm border-b border-white/10 z-10 shrink-0">
+    <header className="p-4 flex justify-between items-center bg-black/40 backdrop-blur-sm border-b border-b-white/10 z-10 shrink-0">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center">
-          <Clover size={24} className="text-emerald-500 fill-emerald-500/20" />
-        </div>
-        <div>
-          <h1 className="text-sm font-medium tracking-tight">CountMaster Blackjack Trainer</h1>
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-emerald-400/80">
-            <Trophy size={10} /> Accuracy: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
+        {/* Explicit, high-contrast back navigation option */}
+        <Link 
+          to="/" 
+          className="p-2.5 sm:px-3 sm:py-1.5 bg-neutral-900/80 hover:bg-neutral-800 border border-white/10 hover:border-emerald-500/30 rounded-xl flex items-center justify-center gap-1.5 text-neutral-300 hover:text-emerald-400 text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-95 shadow-md"
+          aria-label="Back to Portal Hub"
+        >
+          <ArrowLeft size={14} className="stroke-[2.5]" />
+          <span className="hidden md:inline">Hub</span>
+        </Link>
+
+        <div className="w-px h-6 bg-white/10 md:block hidden" />
+
+        <Link to="/" className="flex items-center gap-3 group hover:opacity-90 transition-opacity">
+          <FluorescentCards size="sm" />
+          <div>
+            <h1 className="text-sm font-black uppercase tracking-wider text-white">CountMaster</h1>
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-emerald-400">
+              <Trophy size={10} /> Accuracy: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
       
       <div className="flex items-center gap-4">

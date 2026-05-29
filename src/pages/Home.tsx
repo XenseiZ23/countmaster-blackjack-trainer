@@ -1,471 +1,243 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Card, GameStatus, Hand, GameStats, GameMode } from '../types';
-import { createDeck, calculateHandScore, isBlackjack, getBasicStrategyAction } from '../lib/blackjack';
-import { GameHeader } from '../components/GameHeader';
-import { DiscardTray } from '../components/DiscardTray';
-import { SettingsOverlay } from '../components/SettingsOverlay';
-import { HandView } from '../components/HandView';
-import { DealerHandView } from '../components/DealerHandView';
-import { GameOverlays } from '../components/GameOverlays';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Play, Sparkles, BookOpen, ChevronRight, GraduationCap, ShieldAlert, Coins } from 'lucide-react';
+import { FluorescentCards } from '../components/FluorescentCards';
+import trainerBannerImage from '../assets/images/trainer_banner_1779997659022.png';
+import casinoBannerImage from '../assets/images/casino_banner_1779997683634.png';
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    document.title = 'CountMaster - Ultimate Blackjack Practice Platform';
   }, []);
 
-  useEffect(() => {
-    document.title = 'CountMaster Blackjack Trainer';
-  }, []);
-
-  const [deck, setDeck] = useState<Card[]>([]);
-  const [playerHands, setPlayerHands] = useState<Hand[]>([]);
-  const [dealerHand, setDealerHand] = useState<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-  const [runningCount, setRunningCount] = useState(0);
-  const [status, setStatus] = useState<GameStatus>('setup');
-  const [speed, setSpeed] = useState(2500); // ms delay
-  const [playerCount, setPlayerCount] = useState(1);
-  const [userCountInput, setUserCountInput] = useState<string>('');
-  const [feedback, setFeedback] = useState<{ show: boolean, correct: boolean, message: string }>({ show: false, correct: false, message: '' });
-  const [showSettings, setShowSettings] = useState(false);
-  const [stats, setStats] = useState<GameStats>({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
-  const [gameMode, setGameMode] = useState<GameMode>('standard');
-  const [deckCount, setDeckCount] = useState(6);
-  const [isPaused, setIsPaused] = useState(false);
-  const [cardsInDiscard, setCardsInDiscard] = useState(0);
-  
-  // Refs to track state for timeouts and avoid dependency loops
-  const deckRef = useRef<Card[]>([]);
-  const currentRunningCount = useRef(0);
-  const roundIdRef = useRef(0);
-  const isPausedRef = useRef(false);
-  const playerHandsRef = useRef<Hand[]>([]);
-  const dealerHandRef = useRef<Hand>({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-  const statusRef = useRef<GameStatus>('setup');
-
-  // Keep refs in sync
-  useEffect(() => {
-    isPausedRef.current = isPaused;
-  }, [isPaused]);
-
-  useEffect(() => {
-    playerHandsRef.current = playerHands;
-  }, [playerHands]);
-
-  useEffect(() => {
-    dealerHandRef.current = dealerHand;
-  }, [dealerHand]);
-
-  useEffect(() => {
-    statusRef.current = status;
-  }, [status]);
-
-  const safeSetStatus = useCallback((newStatus: GameStatus) => {
-    setStatus(newStatus);
-    statusRef.current = newStatus;
-  }, []);
-
-  const initDeck = useCallback(() => {
-    const newDeck = createDeck(deckCount);
-    setDeck(newDeck);
-    deckRef.current = newDeck;
-    setCardsInDiscard(0);
-  }, [deckCount]);
-
-  // When deck count changes, reset to idle to prevent inconsistent state
-  useEffect(() => {
-    initDeck();
-    if (statusRef.current !== 'setup') {
-      resetGame('idle');
-    }
-  }, [deckCount, initDeck]);
-
-  // Constant for card width/spacing
-  const CARD_SPACING = 35;
-
-  const wait = (ms: number) => new Promise(resolve => {
-    let remaining = ms;
-    const startTime = Date.now();
-    
-    const checkPause = () => {
-      if (isPausedRef.current) {
-        // If pause happened, we adjust remaining time for when we resume
-        setTimeout(checkPause, 100);
-      } else {
-        const elapsed = Date.now() - startTime;
-        const actualRemaining = Math.max(0, ms - elapsed);
-        setTimeout(resolve, actualRemaining);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1
       }
-    };
-    checkPause();
-  });
-
-  const playRound = useCallback(async () => {
-    // Use ref check to avoid stale closure issues during rapid status transitions
-    if (statusRef.current === 'dealing' || statusRef.current === 'playing' || statusRef.current === 'shoe_depleted') return;
-    
-    // Check if we have enough cards for another round (estimate 8 cards per participant for 5-player safety)
-    const minRequired = Math.max(25, (playerCount + 1) * 8);
-    if (gameMode === 'advanced' && deckRef.current.length < minRequired) {
-      safeSetStatus('shoe_depleted');
-      return;
-    }
-
-    // Add previous round's cards to discard tray using refs to ensure latest values are used
-    const previousCardsCount = dealerHandRef.current.cards.length + playerHandsRef.current.reduce((acc, h) => acc + h.cards.length, 0);
-    if (previousCardsCount > 0) {
-      setCardsInDiscard(prev => prev + previousCardsCount);
-    }
-
-    const currentRoundId = ++roundIdRef.current;
-    safeSetStatus('dealing');
-    
-    // Local state tracking to avoid race conditions
-    const currentHands: Hand[] = Array.from({ length: playerCount }, (_, i) => ({
-      cards: [],
-      score: 0,
-      isBusted: false,
-      isBlackjack: false,
-      playerId: i
-    }));
-    
-    const currentDealer: Hand = { 
-      cards: [], 
-      score: 0, 
-      isBusted: false, 
-      isBlackjack: false, 
-      playerId: -1 
-    };
-
-    setPlayerHands(currentHands);
-    setDealerHand(currentDealer);
-    setFeedback({ show: false, correct: false, message: '' });
-
-    const localDeal = async (targetId: number, reveal: boolean = true) => {
-      // Cancellation check inside localDeal
-      if (roundIdRef.current !== currentRoundId) return null;
-
-      // Reshuffle logic for standard mode
-      if (gameMode === 'standard' && (deckRef.current.length === 0 || deckRef.current.length < (deckCount * 52 * 0.2))) {
-        initDeck();
-      }
-      
-      // Safety check: if deck is empty despite reshuffle or in advanced mode
-      if (deckRef.current.length === 0) {
-        if (gameMode === 'advanced') {
-          safeSetStatus('shoe_depleted');
-        }
-        return null;
-      }
-      
-      const newDeck = [...deckRef.current];
-      const popped = newDeck.pop();
-      if (!popped) {
-        if (gameMode === 'advanced') {
-          safeSetStatus('shoe_depleted');
-        }
-        return null;
-      }
-      
-      const card = { ...popped };
-      card.isRevealed = reveal;
-      deckRef.current = newDeck;
-      setDeck(newDeck);
-
-      if (reveal) {
-        currentRunningCount.current += card.countValue;
-        setRunningCount(currentRunningCount.current);
-      }
-
-      if (targetId === -1) {
-        currentDealer.cards = [...currentDealer.cards, card]; // Immutable array update
-        currentDealer.score = calculateHandScore(currentDealer.cards);
-        currentDealer.isBusted = currentDealer.score > 21;
-        currentDealer.isBlackjack = isBlackjack(currentDealer.cards);
-        setDealerHand({ ...currentDealer });
-      } else {
-        const hand = currentHands[targetId];
-        if (hand) {
-          hand.cards = [...hand.cards, card]; // Immutable array update
-          hand.score = calculateHandScore(hand.cards);
-          hand.isBusted = hand.score > 21;
-          hand.isBlackjack = isBlackjack(hand.cards);
-          setPlayerHands([...currentHands]);
-        }
-      }
-      return card;
-    };
-
-    // Initial Deal: Right to left
-    for (let round = 0; round < 2; round++) {
-      for (let i = playerCount - 1; i >= 0; i--) {
-        if (roundIdRef.current !== currentRoundId) return;
-        await wait(speed / 2.5); // Tighter timing for fluidity
-        if (roundIdRef.current !== currentRoundId) return;
-        const card = await localDeal(i);
-        if (!card) return;
-      }
-      if (roundIdRef.current !== currentRoundId) return;
-      await wait(speed / 2.5); // Tighter timing for fluidity
-      if (roundIdRef.current !== currentRoundId) return;
-      const card = await localDeal(-1, round === 0);
-      if (!card) return;
-    }
-
-    if (roundIdRef.current !== currentRoundId) return;
-    safeSetStatus('playing');
-
-    // Player Turns (Automated): Right to left
-    for (let i = playerCount - 1; i >= 0; i--) {
-      let playerInTurn = true;
-      while (playerInTurn) {
-        if (roundIdRef.current !== currentRoundId) return;
-        const hand = currentHands[i];
-        const dealerUpCard = currentDealer.cards[0];
-        
-        if (hand && !hand.isBusted && dealerUpCard && hand.score < 21 && getBasicStrategyAction(hand.score, dealerUpCard.rank) === 'H') {
-          await wait(speed / 1.5); // Snappier hit speed
-          if (roundIdRef.current !== currentRoundId) return;
-          const card = await localDeal(i);
-          if (!card) return;
-        } else {
-          // If busted in advanced mode, clear cards after a short delay and add to discard tray
-          if (hand && hand.isBusted && gameMode === 'advanced') {
-            await wait(speed);
-            if (roundIdRef.current !== currentRoundId) return;
-            setCardsInDiscard(prev => prev + hand.cards.length);
-            hand.cards = [];
-            setPlayerHands([...currentHands]);
-          }
-          playerInTurn = false;
-        }
-      }
-    }
-
-    // Dealer Turn
-    if (roundIdRef.current !== currentRoundId) return;
-    await wait(speed / 1.5);
-    
-    // Reveal Hole Card
-    if (roundIdRef.current !== currentRoundId) return;
-    if (currentDealer.cards.length >= 2 && !currentDealer.cards[1].isRevealed) {
-      const holeCard = { ...currentDealer.cards[1], isRevealed: true };
-      const newDealerCards = [currentDealer.cards[0], holeCard, ...currentDealer.cards.slice(2)];
-      
-      currentDealer.cards = newDealerCards;
-      currentDealer.score = calculateHandScore(newDealerCards);
-      currentDealer.isBusted = currentDealer.score > 21;
-      currentDealer.isBlackjack = isBlackjack(newDealerCards);
-      
-      currentRunningCount.current += holeCard.countValue;
-      setRunningCount(currentRunningCount.current);
-      setDealerHand({ ...currentDealer });
-    }
-    
-    if (roundIdRef.current !== currentRoundId) return;
-    await wait(speed / 2); // Faster sequence
-
-    while (currentDealer.score < 17) {
-      if (roundIdRef.current !== currentRoundId) return;
-      const card = await localDeal(-1);
-      if (!card) return;
-      if (roundIdRef.current !== currentRoundId) return;
-      await wait(speed / 1.5);
-    }
-
-    if (roundIdRef.current !== currentRoundId) return;
-    
-    // Dynamic wait time: higher speed game = higher multiplier to allow more time to think.
-    const dynamicMultiplier = 2.0 - (speed / 1650);
-    const waitTime = speed * Math.max(0.4, dynamicMultiplier);
-    
-    await wait(waitTime);
-    if (roundIdRef.current !== currentRoundId) return;
-    safeSetStatus('checking_count');
-  }, [deckCount, gameMode, initDeck, playerCount, speed, safeSetStatus]);
-
-  const startRound = useCallback(() => {
-    if (statusRef.current === 'idle' || statusRef.current === 'checking_count') {
-      playRound();
-    }
-  }, [playRound]);
-
-  const verifyCount = (e?: React.KeyboardEvent | React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    // Prevent double-verification if feedback is already showing
-    if (feedback.show) return;
-
-    const input = parseInt(userCountInput);
-    if (isNaN(input)) return;
-    const isCorrect = input === runningCount;
-    
-    setStats(prev => {
-      const newTotal = prev.totalRounds + 1;
-      const newCorrect = isCorrect ? prev.correctGuesses + 1 : prev.correctGuesses;
-      return {
-        correctGuesses: newCorrect,
-        totalRounds: newTotal,
-        accuracy: Math.round((newCorrect / newTotal) * 100)
-      };
-    });
-
-    if (isCorrect) {
-      setUserCountInput('');
-      setFeedback({ show: false, correct: false, message: '' });
-      // Start next round directly without flickering to 'idle'
-      startRound();
-    } else {
-      setFeedback({ show: true, correct: false, message: `Incorrect. The running count is ${runningCount}.` });
     }
   };
 
-  const continueAfterError = useCallback(() => {
-    setUserCountInput('');
-    setFeedback({ show: false, correct: false, message: '' });
-    // Start next round directly without flickering to 'idle'
-    startRound();
-  }, [startRound]);
-
-  // Keyboard support for continuing after error
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && feedback.show) {
-        continueAfterError();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [feedback.show, continueAfterError]);
-
-  const resetGame = (targetStatus: GameStatus = 'setup') => {
-    roundIdRef.current++; // Cancel current round loop
-    setRunningCount(0);
-    currentRunningCount.current = 0;
-    
-    // Explicitly re-init deck to ensure it's fresh for the new state
-    const newDeck = createDeck(deckCount);
-    setDeck(newDeck);
-    deckRef.current = newDeck;
-    
-    setPlayerHands([]);
-    setDealerHand({ cards: [], score: 0, isBusted: false, isBlackjack: false, playerId: -1 });
-    safeSetStatus(targetStatus);
-    setFeedback({ show: false, correct: false, message: '' });
-    setStats({ correctGuesses: 0, totalRounds: 0, accuracy: 0 });
-    setCardsInDiscard(0);
-    setIsPaused(false);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: 'spring', roughness: 0.5, damping: 25 }
+    }
   };
-
-  if (status === 'setup' || showSettings) {
-    return (
-      <SettingsOverlay
-        showSettings={showSettings}
-        status={status}
-        gameMode={gameMode}
-        setGameMode={setGameMode}
-        deckCount={deckCount}
-        setDeckCount={setDeckCount}
-        playerCount={playerCount}
-        setPlayerCount={setPlayerCount}
-        speed={speed}
-        setSpeed={setSpeed}
-        setShowSettings={setShowSettings}
-        resetGame={resetGame}
-      />
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col overflow-hidden transform-gpu">
-      <GameHeader
-        stats={stats}
-        totalRounds={stats.totalRounds}
-        speed={speed}
-        playerCount={playerCount}
-        isPaused={isPaused}
-        setIsPaused={setIsPaused}
-        setShowSettings={setShowSettings}
-      />
+    <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col justify-between overflow-x-hidden transform-gpu relative">
+      {/* Dark Felt Texture Backdrop */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#043e30_0%,_#171717_100%)] opacity-95">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
+        {/* Decorative felt border */}
+        <div className="absolute -top-1/3 left-1/2 -translate-x-1/2 w-[140vw] h-[90vw] border-[10px] border-white/5 rounded-[100%] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
+      </div>
 
-      {/* Main Table */}
-      <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden isolate">
-        {/* Table Felt (Background remains visible but potentially darker/blurred) */}
-        <div className={`absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#065f46_0%,_#064e3b_100%)] transition-opacity duration-300 ${isPaused ? 'brightness-[0.2]' : 'brightness-100'}`}>
-          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
-          {/* Table markings */}
-          <div className={`absolute -top-1/4 left-1/2 -translate-x-1/2 w-[120vw] h-[80vw] border-[12px] border-white/10 rounded-[100%] pointer-events-none transition-opacity duration-300 ${isPaused ? 'opacity-20' : 'opacity-100'}`} />
+      {/* Header Bar */}
+      <header className="relative z-10 p-4 sm:p-6 flex items-center justify-between border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <FluorescentCards size="sm" />
+          <div>
+            <span className="text-sm sm:text-base font-black uppercase tracking-widest text-white leading-none">CountMaster</span>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-emerald-400 font-bold leading-none mt-1">BLACKJACK ACADEMY</p>
+          </div>
         </div>
+        <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-semibold text-neutral-400 select-none">
+          <Link 
+            to="/about" 
+            className="hover:text-emerald-400 hover:tracking-[0.28em] transition-all duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-emerald-400 hover:after:w-full after:transition-all after:duration-300"
+          >
+            About
+          </Link>
+          <span className="text-white/10 select-none font-light">/</span>
+          <a 
+            href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-emerald-400 hover:tracking-[0.28em] transition-all duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-emerald-400 hover:after:w-full after:transition-all after:duration-300"
+          >
+            GitHub
+          </a>
+        </div>
+      </header>
 
-        {/* Content Blur Wrapper */}
-        <div className={`flex-1 w-full flex flex-col items-center justify-between py-2 sm:py-6 transition-opacity duration-300 ${isPaused ? 'blur-md scale-[0.99] pointer-events-none opacity-20 select-none' : 'blur-0 scale-100 opacity-100'}`}>
-          {/* Dealer Hand */}
-          <DealerHandView hand={dealerHand} />
-
-          {/* Players Container */}
-          <div className="relative z-10 w-full flex flex-wrap justify-center items-end gap-x-4 sm:gap-x-12 md:gap-x-24 gap-y-4 sm:gap-y-16 max-w-7xl px-2 sm:px-6 lg:px-8 pb-20 sm:pb-12 pt-4 sm:pt-12">
-            {playerHands.map((hand, idx) => (
-              <HandView 
-                key={idx}
-                hand={hand}
-                isMobile={isMobile}
-                scaleClass={playerCount > 3 ? "scale-[0.55] sm:scale-90" : "scale-[0.7] sm:scale-100"}
-                cardSpacing={CARD_SPACING}
-              />
-            ))}
+      {/* Main Container */}
+      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-12 md:py-16 flex flex-col justify-center items-center gap-10 md:gap-14">
+        
+        {/* Display Title with elegant animations */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center space-y-4 max-w-3xl"
+        >
+          {/* Subtle decorative banner */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-2">
+            <Sparkles size={12} className="text-emerald-400 animate-spin" style={{ animationDuration: '4s' }} />
+            <span className="text-[9px] sm:text-[10px] text-emerald-300 font-extrabold uppercase tracking-[0.25em]">
+              Professional Free Trainer
+            </span>
           </div>
 
-          {/* Discard Tray - Visible in both modes to show deck penetration and progress */}
-          <DiscardTray 
-            cardsInDiscard={cardsInDiscard}
-            deckCount={deckCount}
-            isPaused={isPaused}
-          />
-        </div>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter uppercase italic leading-none">
+            <span className="bg-gradient-to-br from-white via-white to-white/60 bg-clip-text text-transparent">COUNT</span>
+            <span className="text-emerald-400">MASTER</span>
+          </h1>
+          
+          <p className="text-neutral-400 font-medium text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            Hone card counting speed, test your math conversions, and build rock-solid strategy reflexes using memory simulator tools built for mathematical edge.
+          </p>
+        </motion.div>
 
-        <GameOverlays 
-          status={status}
-          isPaused={isPaused}
-          setIsPaused={setIsPaused}
-          startRound={startRound}
-          resetGame={resetGame}
-          setShowSettings={setShowSettings}
-          runningCount={runningCount}
-          deck={deck}
-          feedback={feedback}
-          userCountInput={userCountInput}
-          setUserCountInput={setUserCountInput}
-          verifyCount={verifyCount}
-          continueAfterError={continueAfterError}
-        />
+        {/* Scalable Multi-Mode Section */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col gap-6 sm:gap-8 w-full max-w-4xl"
+        >
+          {/* Card 1: Count Trainer Page Link */}
+          <motion.div 
+            variants={itemVariants}
+            className="group relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/5 hover:border-emerald-500/20 bg-neutral-950 shadow-2xl hover:shadow-emerald-950/20 transition-all duration-500 flex flex-col md:flex-row md:items-center justify-between min-h-[220px]"
+          >
+            {/* Background Image with Zoom & Dark Gradient Fade */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <img 
+                src={trainerBannerImage}
+                alt="Count Trainer Backdrop" 
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none opacity-40 group-hover:opacity-50"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/90 to-transparent pointer-events-none md:block hidden" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-transparent pointer-events-none md:hidden block" />
+            </div>
+
+            {/* Content overlay */}
+            <div className="relative z-10 p-6 sm:p-8 md:p-10 flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-3 max-w-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 transition-all">
+                    <GraduationCap size={20} className="fill-emerald-400/10" />
+                  </div>
+                  <div>
+                    <span className="text-[9px] tracking-[0.2em] font-black uppercase text-emerald-400 leading-none block">STABLE SYSTEM</span>
+                    <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-[8px] font-extrabold uppercase tracking-widest text-emerald-300 mt-1 inline-block">
+                      HI-LO ACTIVE
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="text-xl sm:text-2xl font-black uppercase italic tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                    Count Trainer
+                  </h3>
+                  <p className="text-xs sm:text-sm text-neutral-300 font-medium leading-relaxed">
+                    Fast-paced card counting drills focused on running count accuracy, deck estimation conversions, and custom table speed calibration.
+                  </p>
+                </div>
+
+                {/* Bullets */}
+                <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-neutral-400 font-medium select-none">
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-emerald-500" /> Running & True Counts</li>
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-emerald-500" /> Standard & Shoe Modes</li>
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-emerald-500" /> Custom Seat Bots</li>
+                </ul>
+              </div>
+
+              <div className="shrink-0">
+                <Link
+                  to="/trainer"
+                  className="inline-flex py-3.5 px-8 bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-950/20 transition-all group-hover:scale-[1.03] active:scale-95 items-center gap-2 border border-emerald-400/20"
+                >
+                  Launch Trainer <Play fill="currentColor" size={12} />
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Card 2: Casino Simulation Placeholder Page Link */}
+          <motion.div 
+            variants={itemVariants}
+            className="group relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/5 bg-neutral-950 shadow-xl transition-all duration-500 flex flex-col md:flex-row md:items-center justify-between min-h-[220px]"
+          >
+            {/* Background Image with Zoom & Dark Gradient Fade */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <img 
+                src={casinoBannerImage}
+                alt="Casino Simulation Backdrop" 
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none opacity-20 filter grayscale group-hover:grayscale-0 group-hover:opacity-30"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/90 to-transparent pointer-events-none md:block hidden" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-transparent pointer-events-none md:hidden block" />
+            </div>
+
+            {/* Content overlay */}
+            <div className="relative z-10 p-6 sm:p-8 md:p-10 flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-3 max-w-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-center justify-center text-yellow-500">
+                    <Coins size={20} className="fill-yellow-500/10" />
+                  </div>
+                  <div>
+                    <span className="text-[9px] tracking-[0.2em] font-black uppercase text-yellow-500 leading-none block">ROADMAP</span>
+                    <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/20 rounded text-[8px] font-extrabold uppercase tracking-widest text-yellow-500 mt-1 inline-block animate-pulse">
+                      COMING SOON
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="text-xl sm:text-2xl font-black uppercase italic tracking-tight text-white group-hover:text-yellow-400 transition-colors">
+                    Casino Simulation
+                  </h3>
+                  <p className="text-xs sm:text-sm text-neutral-400 font-medium leading-relaxed">
+                    Interactive real-world table mode with manual gameplay, custom bets, split gestures, and virtual bankroll analytics.
+                  </p>
+                </div>
+
+                {/* Bullets */}
+                <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-neutral-500 font-medium select-none">
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-neutral-700" /> Manual Play Decisions</li>
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-neutral-700" /> Betting Systems</li>
+                  <li className="flex items-center gap-1"><ChevronRight size={12} className="text-neutral-700" /> Bankroll Tracking</li>
+                </ul>
+              </div>
+
+              <div className="shrink-0">
+                <Link
+                  to="/casino"
+                  className="inline-flex py-3.5 px-8 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-400 hover:text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all group-hover:scale-[1.03] active:scale-95 items-center gap-2"
+                >
+                  Coming Soon <ChevronRight size={12} />
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
       </main>
 
-      {/* Footer Info */}
-      <footer className="p-3 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-6">
+      {/* Footer Disclaimer */}
+      <footer className="relative z-10 p-5 sm:p-6 bg-black/60 border-t border-white/5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-medium select-none flex flex-col sm:flex-row justify-between items-center shrink-0 gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
+          <span>© 2026 COUNTMASTER PROJECT. ALL RIGHTS RESERVED.</span>
+          <span className="hidden sm:inline text-white/5">|</span>
           <div className="flex gap-4">
-            <span>HI-LO SYSTEM</span>
-            <span className="text-emerald-500">2-6 (+1)</span>
-            <span className="text-neutral-400">7-9 (0)</span>
-            <span className="text-red-500">10-A (-1)</span>
+            <span>VER. 1.2.0</span>
+            <span className="text-emerald-500/80 font-bold">HI-LO COMPLIANT</span>
           </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-          {gameMode === 'advanced' ? (
-            <div className="px-2 py-0.5 rounded border border-emerald-500/30 text-emerald-400 font-black text-[8px]">ADVANCED</div>
-          ) : (
-            <div className="px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 font-black text-[8px]">BASIC</div>
-          )}
+        <div className="text-center sm:text-right text-[8px] sm:text-[9px] text-neutral-600 tracking-wider max-w-lg leading-relaxed uppercase">
+          EDUCATIONAL SIMULATOR • NO CURRENCY CONVERSIONS • ACCURATE MATHEMATICAL TRAINING WITHOUT REAL MONEY
         </div>
       </footer>
     </div>
