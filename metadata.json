@@ -1,5 +1,5 @@
 {
-  "name": "CountMaster Blackjack Trainer",
+  "name": "Blackjack Card Counter Trainer",
   "description": "Master card counting and memory in a high-fidelity blackjack simulator.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

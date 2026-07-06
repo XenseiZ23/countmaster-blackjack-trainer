@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { FeedbackPanel } from './FeedbackPanel';
 import { GameStatus, Card } from '../types';
-import { FluorescentCards } from './FluorescentCards';
+import { AcademyLogo } from './AcademyLogo';
 
 interface GameOverlaysProps {
   status: GameStatus;
@@ -58,13 +58,13 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
 
              <button 
               onClick={() => setIsPaused(false)}
-              className="group relative px-12 py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase italic tracking-wider transition-opacity duration-300 hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(16,185,129,0.3)]"
+              className="group relative px-12 py-5 rounded-2xl bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 font-black uppercase italic tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
              >
                <div className="flex items-center gap-4">
                  <span>Resume</span>
                  <Play size={18} fill="currentColor" />
                </div>
-               <div className="absolute inset-0 rounded-2xl border-2 border-white/40 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300" />
+               <div className="absolute inset-0 rounded-2xl border border-white/20 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300" />
              </button>
            </motion.div>
         </motion.div>
@@ -79,7 +79,7 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
         >
           <button 
             onClick={startRound}
-            className="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl shadow-2xl transition-opacity hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
+            className="group relative px-12 py-5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
           >
             <Play fill="currentColor" size={48} className="text-white" />
             <span className="font-bold text-xl uppercase tracking-widest">Start Hand</span>
@@ -95,8 +95,8 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
           className="absolute inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6"
         >
           <div className="max-w-md w-full bg-neutral-900 border border-white/10 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-8 text-center">
-            <div className="w-20 h-20 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl flex items-center justify-center shadow-lg">
-              <FluorescentCards size="lg" />
+            <div className="w-20 h-20 bg-neutral-950 border border-white/10 rounded-3xl flex items-center justify-center shadow-lg">
+              <AcademyLogo size="lg" />
             </div>
             
             <div className="space-y-4">
@@ -111,7 +111,7 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
                 </div>
                 <div className="text-center border-l border-white/10">
                   <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">True Count</p>
-                  <p className="text-2xl font-mono font-bold text-emerald-400 leading-none">
+                  <p className="text-2xl font-mono font-bold text-white leading-none">
                     {(runningCount / Math.max(0.25, deck.length / 52)).toFixed(1)}
                   </p>
                 </div>
@@ -121,14 +121,14 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
             <div className="grid grid-cols-1 gap-4 w-full">
               <button 
                 onClick={() => resetGame('idle')}
-                className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-opacity shadow-xl shadow-emerald-900/20 active:scale-95"
+                className="w-full py-5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl active:scale-95"
               >
                 New Shoe (Same Settings)
               </button>
               
               <button 
                 onClick={() => setShowSettings(true)}
-                className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-opacity active:scale-95 text-neutral-400"
+                className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 text-neutral-300 hover:text-white shadow-lg"
               >
                 Change Settings
               </button>

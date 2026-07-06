@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { Card, GameStatus, Hand, GameStats, GameMode } from '../types';
 import { createDeck, calculateHandScore, isBlackjack, getBasicStrategyAction } from '../lib/blackjack';
 import { GameHeader } from '../components/GameHeader';
@@ -7,9 +9,13 @@ import { SettingsOverlay } from '../components/SettingsOverlay';
 import { HandView } from '../components/HandView';
 import { DealerHandView } from '../components/DealerHandView';
 import { GameOverlays } from '../components/GameOverlays';
+import SupercellSplash from '../components/SupercellSplash';
 
 export default function Trainer() {
+  const navigate = useNavigate();
+  const [showSplash, setShowSplash] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,7 +27,7 @@ export default function Trainer() {
   }, []);
 
   useEffect(() => {
-    document.title = 'CountMaster Blackjack Trainer';
+    document.title = 'Blackjack Card Counter';
   }, []);
 
   const [deck, setDeck] = useState<Card[]>([]);
@@ -366,22 +372,36 @@ export default function Trainer() {
     setIsPaused(false);
   };
 
+  const handleBackClick = () => {
+    if (status !== 'setup') {
+      setIsPaused(true);
+      setShowExitConfirm(true);
+    } else {
+      navigate('/');
+    }
+  };
+
   if (status === 'setup' || showSettings) {
     return (
-      <SettingsOverlay
-        showSettings={showSettings}
-        status={status}
-        gameMode={gameMode}
-        setGameMode={setGameMode}
-        deckCount={deckCount}
-        setDeckCount={setDeckCount}
-        playerCount={playerCount}
-        setPlayerCount={setPlayerCount}
-        speed={speed}
-        setSpeed={setSpeed}
-        setShowSettings={setShowSettings}
-        resetGame={resetGame}
-      />
+      <div className="relative min-h-screen w-full overflow-hidden">
+        <SettingsOverlay
+          showSettings={showSettings}
+          status={status}
+          gameMode={gameMode}
+          setGameMode={setGameMode}
+          deckCount={deckCount}
+          setDeckCount={setDeckCount}
+          playerCount={playerCount}
+          setPlayerCount={setPlayerCount}
+          speed={speed}
+          setSpeed={setSpeed}
+          setShowSettings={setShowSettings}
+          resetGame={resetGame}
+        />
+        {showSplash && (
+          <SupercellSplash onComplete={() => setShowSplash(false)} />
+        )}
+      </div>
     );
   }
 
@@ -395,15 +415,86 @@ export default function Trainer() {
         isPaused={isPaused}
         setIsPaused={setIsPaused}
         setShowSettings={setShowSettings}
+        onBackClick={handleBackClick}
       />
 
       {/* Main Table */}
       <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden isolate">
-        {/* Table Felt (Background remains visible but potentially darker/blurred) */}
-        <div className={`absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_#065f46_0%,_#064e3b_100%)] transition-opacity duration-300 ${isPaused ? 'brightness-[0.2]' : 'brightness-100'}`}>
-          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
-          {/* Table markings */}
-          <div className={`absolute -top-1/4 left-1/2 -translate-x-1/2 w-[120vw] h-[80vw] border-[12px] border-white/10 rounded-[100%] pointer-events-none transition-opacity duration-300 ${isPaused ? 'opacity-20' : 'opacity-100'}`} />
+        {/* Table Felt with Elegant Ambient Glowing Orbs */}
+        <div className={`absolute inset-0 z-0 bg-[linear-gradient(to_right,_#062213_0%,_#0c4226_20%,_#14532d_40%,_#166534_50%,_#14532d_60%,_#0c4226_80%,_#062213_100%)] overflow-hidden transition-all duration-300 ${isPaused ? 'brightness-[0.18]' : 'brightness-100'}`}>
+          {/* Organic Ambient Glowing Orbs on the Live Table */}
+          <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] max-w-[650px] rounded-full bg-emerald-500/[0.10] blur-[120px] pointer-events-none animate-[pulse_9s_ease-in-out_infinite]" />
+          <div className="absolute bottom-[10%] -right-[10%] w-[50vw] h-[50vw] max-w-[550px] rounded-full bg-emerald-600/[0.08] blur-[110px] pointer-events-none animate-[pulse_11s_ease-in-out_infinite_1.5s]" />
+
+          {/* Felt Texture pattern */}
+          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')] mix-blend-overlay pointer-events-none" />
+          
+          {/* Detailed SVG Table markings spanning edge-to-edge across the bottom */}
+          <div className={`absolute bottom-0 left-0 right-0 h-[70vh] pointer-events-none transition-all duration-300 ${isPaused ? 'opacity-10' : 'opacity-100'}`}>
+            <svg 
+              className="w-full h-full opacity-[0.38] mix-blend-screen"
+              viewBox="0 0 1000 450"
+              preserveAspectRatio="xMidYMax slice"
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Paths for text-on-path alignment */}
+              <path id="dealer-limit-arc" d="M 0,30 Q 500,340 1000,30" fill="none" stroke="rgba(245,158,11,0.5)" strokeWidth="1.8" />
+              <path id="payout-text-arc" d="M 80,100 Q 500,360 920,100" fill="none" />
+              <path id="rules-text-arc" d="M 140,140 Q 500,380 860,140" fill="none" />
+              <path id="insurance-band" d="M 180,170 Q 500,400 820,170" fill="none" stroke="rgba(245,158,11,0.38)" strokeWidth="18" strokeLinecap="round" />
+              <path id="insurance-text-arc" d="M 180,172 Q 500,402 820,172" fill="none" />
+              <path id="inner-gold-arc" d="M 230,210 Q 500,420 770,210" fill="none" stroke="rgba(245,158,11,0.32)" strokeWidth="1.5" strokeDasharray="6,4" />
+
+              {/* Text on Paths */}
+              <text className="font-sans font-black tracking-[0.3em] uppercase text-[15px] fill-amber-400">
+                <textPath href="#payout-text-arc" startOffset="50%" textAnchor="middle">
+                  Blackjack Pays 3 To 2
+                </textPath>
+              </text>
+
+              <text className="font-sans font-bold tracking-[0.18em] uppercase text-[9px] fill-white/70">
+                <textPath href="#rules-text-arc" startOffset="50%" textAnchor="middle">
+                  Dealer must draw to 16 and stand on all 17s
+                </textPath>
+              </text>
+
+              <text className="font-sans font-extrabold tracking-[0.25em] uppercase text-[10px] fill-neutral-900">
+                <textPath href="#insurance-text-arc" startOffset="50%" textAnchor="middle">
+                  Insurance Pays 2 To 1
+                </textPath>
+              </text>
+
+              {/* Player Card Boxes Placeholders to ground the players' seats */}
+              <g opacity="0.25">
+                {/* Dealer Placement Box */}
+                <rect x="460" y="20" width="80" height="110" rx="6" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3" fill="none" />
+                
+                {/* Player Betting Circles/Boxes distributed in an arc */}
+                <g stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none">
+                  {/* Seat 1 */}
+                  <circle cx="180" cy="300" r="32" />
+                  <rect x="145" y="240" width="70" height="95" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                  
+                  {/* Seat 2 */}
+                  <circle cx="340" cy="350" r="32" />
+                  <rect x="305" y="290" width="70" height="95" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                  
+                  {/* Seat 3 (Center) */}
+                  <circle cx="500" cy="370" r="32" />
+                  <rect x="465" y="310" width="70" height="95" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                  
+                  {/* Seat 4 */}
+                  <circle cx="660" cy="350" r="32" />
+                  <rect x="625" y="290" width="70" height="95" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                  
+                  {/* Seat 5 */}
+                  <circle cx="820" cy="300" r="32" />
+                  <rect x="785" y="240" width="70" height="95" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                </g>
+              </g>
+            </svg>
+          </div>
         </div>
 
         {/* Content Blur Wrapper */}
@@ -453,21 +544,55 @@ export default function Trainer() {
       <footer className="p-3 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex gap-4">
-            <span>HI-LO SYSTEM</span>
-            <span className="text-emerald-500">2-6 (+1)</span>
+            <span>CARD COUNTING SYSTEM</span>
+            <span className="text-[#10b981]">2-6 (+1)</span>
             <span className="text-neutral-400">7-9 (0)</span>
             <span className="text-red-500">10-A (-1)</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
-          {gameMode === 'advanced' ? (
-            <div className="px-2 py-0.5 rounded border border-emerald-500/30 text-emerald-400 font-black text-[8px]">ADVANCED</div>
-          ) : (
-            <div className="px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 font-black text-[8px]">BASIC</div>
-          )}
+        <div className="flex items-center gap-4 select-none font-bold">
+          <span className="text-[9px] text-neutral-500 font-medium font-sans">
+            MODE <span className="text-white/20 px-1">|</span> <span className={gameMode === 'advanced' ? 'text-emerald-400 font-black' : 'text-neutral-300 font-black'}>{gameMode.toUpperCase()}</span>
+          </span>
         </div>
       </footer>
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="max-w-md w-full bg-neutral-900 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center gap-6">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500">
+              <ArrowLeft size={32} className="stroke-[2.5]" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">Are you sure you want to leave?</h3>
+              <p className="text-sm text-neutral-400">
+                If you leave now, you will lose your current training session progress.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
+              <button
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  setIsPaused(false);
+                }}
+                className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-bold text-xs uppercase tracking-widest transition-colors text-white"
+              >
+                No, Keep Training
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/');
+                }}
+                className="flex-1 py-3.5 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-bold text-xs uppercase tracking-widest transition-colors shadow-lg shadow-red-950/50"
+              >
+                Yes, Exit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
