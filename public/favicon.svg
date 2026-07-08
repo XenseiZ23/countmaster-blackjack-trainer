@@ -1,136 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 80 110" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
   <defs>
-    <linearGradient id="pokerEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#34d399" />
-      <stop offset="100%" stopColor="#047857" />
+    <!-- Deep premium gold gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#78350f" />
     </linearGradient>
-    <linearGradient id="pokerGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#fbbf24" />
-      <stop offset="100%" stopColor="#b45309" />
+    
+    <!-- Glowing emerald gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#047857" />
     </linearGradient>
-    <linearGradient id="pokerSilver" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#f5f5f7" />
-      <stop offset="100%" stopColor="#737373" />
-    </linearGradient>
-    <linearGradient id="faceWhiteGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#ecfdf5" />
-      <stop offset="100%" stopColor="#d1fae5" />
-    </linearGradient>
-    <linearGradient id="hatDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#1f2937" />
-      <stop offset="100%" stopColor="#111827" />
-    </linearGradient>
+
+    <!-- Dark felt center background -->
+    <radialGradient id="darkBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#062e1b" />
+      <stop offset="70%" stop-color="#02140b" />
+      <stop offset="100%" stop-color="#010402" />
+    </radialGradient>
   </defs>
 
-  <!-- Background Card Outer Core -->
-  <rect x="2" y="2" width="76" height="106" rx="8" fill="#171717" stroke="#262626" stroke-width="2" />
+  <!-- Outer Ring / Casino Chip Boundary -->
+  <circle cx="32" cy="32" r="30" fill="url(#goldGrad)" />
+  <circle cx="32" cy="32" r="28" fill="#010402" />
 
-  <!-- Double-line thin elegant border -->
-  <rect x="4" y="4" width="72" height="102" rx="6" stroke="url(#pokerEmerald)" stroke-width="0.8" opacity="0.4" />
-  <rect x="7" y="7" width="66" height="96" rx="4" stroke="url(#pokerEmerald)" stroke-width="0.5" stroke-dasharray="1 2" opacity="0.25" />
-
-  <!-- Corner Joker Symbols -->
-  <g fill="url(#pokerEmerald)" font-family="Georgia, serif" font-weight="900" font-size="8" text-anchor="middle" opacity="0.8">
-    <text x="12" y="15">J</text>
-    <text x="12" y="22">O</text>
-    <text x="12" y="29">K</text>
-    <text x="12" y="36">E</text>
-    <text x="12" y="43">R</text>
-  </g>
-  <polygon points="12,47 13.5,49.5 16,49.5 14,51 14.5,53.5 12,52 9.5,53.5 10,51 8,49.5 10.5,49.5" fill="url(#pokerGold)" />
-
-  <g transform="rotate(180, 40, 55)">
-    <g fill="url(#pokerEmerald)" font-family="Georgia, serif" font-weight="900" font-size="8" text-anchor="middle" opacity="0.8">
-      <text x="12" y="15">J</text>
-      <text x="12" y="22">O</text>
-      <text x="12" y="29">K</text>
-      <text x="12" y="36">E</text>
-      <text x="12" y="43">R</text>
-    </g>
-    <polygon points="12,47 13.5,49.5 16,49.5 14,51 14.5,53.5 12,52 9.5,53.5 10,51 8,49.5 10.5,49.5" fill="url(#pokerGold)" />
+  <!-- 8 Golden Radial Stripes/Notches of Casino Chip -->
+  <g stroke="url(#goldGrad)" stroke-width="3.5" stroke-linecap="round" opacity="0.85">
+    <line x1="32" y1="2.5" x2="32" y2="6.5" />
+    <line x1="32" y1="57.5" x2="32" y2="61.5" />
+    <line x1="2.5" y1="32" x2="6.5" y2="32" />
+    <line x1="57.5" y1="32" x2="61.5" y2="32" />
+    <line x1="11.2" y1="11.2" x2="14.2" y2="14.2" />
+    <line x1="49.8" y1="49.8" x2="52.8" y2="52.8" />
+    <line x1="11.2" y1="49.8" x2="14.2" y2="46.8" />
+    <line x1="49.8" y1="11.2" x2="52.8" y2="14.2" />
   </g>
 
-  <!-- Central Jester Artwork (Sits comfortably in the card, scaled nicely to viewBox 0 0 80 110) -->
-  <g transform="translate(18, 18) scale(0.85)">
-    <!-- Watermark disk behind portrait -->
-    <circle cx="50" cy="65" r="30" stroke="url(#pokerEmerald)" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.2" />
+  <!-- Inner Rim with Emerald glow -->
+  <circle cx="32" cy="32" r="23" fill="url(#darkBg)" stroke="url(#emeraldGrad)" stroke-width="1.8" />
+  
+  <!-- Fine inner dotted line -->
+  <circle cx="32" cy="32" r="19.5" stroke="#34d399" stroke-width="0.5" stroke-dasharray="1 1.5" opacity="0.5" />
 
-    <!-- 1. JESTER COLLAR -->
-    <path d="M 36 90 Q 20 90, 8 98 Q 23 103, 33 97 Z" fill="url(#hatDarkGrad)" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-    <circle cx="8" cy="98" r="1.8" fill="url(#pokerGold)" />
+  <!-- Drop Shadow for BA Logo in center -->
+  <text 
+    x="31.5" 
+    y="41.5" 
+    font-family="'Kanit', 'Arial Black', Impact, sans-serif" 
+    font-size="25" 
+    font-weight="900" 
+    font-style="italic" 
+    text-anchor="middle" 
+    fill="#000000" 
+    opacity="0.75"
+  >
+    <tspan>B</tspan><tspan dx="-1">A</tspan>
+  </text>
 
-    <path d="M 40 92 Q 33 115, 23 125 Q 40 115, 45 98 Z" fill="url(#pokerEmerald)" />
-    <circle cx="23" cy="125" r="1.8" fill="url(#pokerGold)" />
-
-    <path d="M 45 95 Q 50 122, 50 132 Q 50 122, 55 95 Z" fill="url(#hatDarkGrad)" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-    <circle cx="50" cy="132" r="1.8" fill="url(#pokerGold)" />
-
-    <path d="M 60 92 Q 67 115, 77 125 Q 60 115, 55 98 Z" fill="url(#pokerEmerald)" />
-    <circle cx="77" cy="125" r="1.8" fill="url(#pokerGold)" />
-
-    <path d="M 64 90 Q 80 90, 92 98 Q 77 103, 67 97 Z" fill="url(#hatDarkGrad)" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-    <circle cx="92" cy="98" r="1.8" fill="url(#pokerGold)" />
-
-    <!-- 2. THE THREE-POINTED JESTER CAP -->
-    <path d="M 38 41 C 18 36, 10 44, 10 65 C 10 70, 18 70, 15 62 C 14 54, 23 48, 42 45 Z" fill="url(#hatDarkGrad)" stroke="url(#pokerEmerald)" stroke-width="0.8" />
-    <circle cx="10" cy="65" r="2.8" fill="url(#pokerGold)" />
-
-    <path d="M 62 41 C 82 36, 90 44, 90 65 C 90 70, 82 70, 85 62 C 86 54, 77 48, 58 45 Z" fill="url(#pokerEmerald)" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-    <circle cx="90" cy="65" r="2.8" fill="url(#pokerGold)" />
-
-    <path d="M 38 41 C 40 22, 53 10, 68 12 C 77 14, 76 26, 68 28 C 61 29, 57 23, 61 17 C 65 14, 53 18, 46 38 Q 50 35, 62 41 Z" fill="url(#pokerEmerald)" stroke="url(#pokerEmerald)" stroke-width="0.8" />
-
-    <path d="M 37 42 Q 50 36, 63 42 Q 50 39, 37 42" fill="url(#pokerSilver)" />
-
-    <!-- 3. SINISTER FACE -->
-    <path d="M 37 42 C 34 50, 31 75, 50 94 C 69 75, 66 50, 63 42 Z" fill="url(#faceWhiteGlow)" stroke="url(#pokerEmerald)" stroke-width="1" />
-
-    <path d="M 36 50 C 30 50, 27 60, 34 62 C 32 58, 33 54, 36 53 Z" fill="url(#faceWhiteGlow)" stroke="url(#pokerEmerald)" stroke-width="0.8" />
-    <path d="M 33 53 C 31 53, 30 57, 33 58" stroke="url(#pokerEmerald)" stroke-width="0.6" fill="none" />
-
-    <path d="M 64 50 C 70 50, 73 60, 66 62 C 68 58, 67 54, 64 53 Z" fill="url(#faceWhiteGlow)" stroke="url(#pokerEmerald)" stroke-width="0.8" />
-    <path d="M 67 53 C 69 53, 70 57, 67 58" stroke="url(#pokerEmerald)" stroke-width="0.6" fill="none" />
-
-    <path d="M 46 45 Q 50 49, 54 45" stroke="#047857" stroke-width="0.8" fill="none" />
-    <path d="M 48 48 Q 50 51, 52 48" stroke="#047857" stroke-width="0.8" fill="none" />
-
-    <!-- 4. EYE DESIGN -->
-    <path d="M 38 52 C 43 51, 47 55, 48 58 C 44 57, 40 56, 38 52 Z" fill="#111827" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-    <path d="M 62 52 C 57 51, 53 55, 52 58 C 56 57, 60 56, 62 52 Z" fill="#111827" stroke="url(#pokerEmerald)" stroke-width="0.5" />
-
-    <ellipse cx="44" cy="55" rx="2" ry="1.2" fill="#34d399" />
-    <ellipse cx="56" cy="55" rx="2" ry="1.2" fill="#34d399" />
-    <circle cx="44" cy="55" r="0.5" fill="#ffffff" />
-    <circle cx="56" cy="55" r="0.5" fill="#ffffff" />
-
-    <path d="M 50 52 L 47 68 C 49 71, 51 71, 53 68 Z" fill="url(#faceWhiteGlow)" stroke="#047857" stroke-width="0.8" />
-
-    <path d="M 36 62 Q 41 62, 43 65" stroke="#047857" stroke-width="0.6" fill="none" />
-    <path d="M 64 62 Q 59 62, 57 65" stroke="#047857" stroke-width="0.6" fill="none" />
-
-    <!-- 5. SMILE & SHARP WHITE TEETH -->
-    <path d="M 38 64 C 42 85, 58 85, 62 64 C 58 76, 42 76, 38 64 Z" fill="#111827" stroke="#047857" stroke-width="0.8" />
-    <path d="M 37 63 Q 50 78, 63 63" stroke="url(#pokerEmerald)" stroke-width="1.5" stroke-linecap="round" fill="none" />
-    <path d="M 35 63 Q 50 90, 65 63" stroke="url(#pokerEmerald)" stroke-width="1.2" stroke-linecap="round" fill="none" />
-
-    <g fill="#ffffff">
-      <polygon points="41,66 42,70 43,66" />
-      <polygon points="44,67 45,71 46,67" />
-      <polygon points="47,67 48,72 49,67" />
-      <polygon points="50,67 51,72 52,67" />
-      <polygon points="53,67 54,71 55,67" />
-      <polygon points="56,66 57,70 58,66" />
-
-      <polygon points="42,73 43,69 44,73" />
-      <polygon points="45,74 46,70 47,74" />
-      <polygon points="48,75 49,70 50,75" />
-      <polygon points="51,74 52,70 53,74" />
-      <polygon points="54,73 55,69 56,73" />
-    </g>
-
-    <path d="M 36 61 Q 34 63, 37 65" stroke="url(#pokerEmerald)" stroke-width="1" fill="none" />
-    <path d="M 64 61 Q 66 63, 63 65" stroke="url(#pokerEmerald)" stroke-width="1" fill="none" />
-
-    <path d="M 46 83 Q 50 86, 54 83" stroke="#047857" stroke-width="0.8" fill="none" />
-  </g>
+  <!-- Actual BA Logo in center -->
+  <text 
+    x="30" 
+    y="40" 
+    font-family="'Kanit', 'Arial Black', Impact, sans-serif" 
+    font-size="25" 
+    font-weight="900" 
+    font-style="italic" 
+    text-anchor="middle"
+  >
+    <tspan fill="#ffffff">B</tspan><tspan fill="#10b981" dx="-1">A</tspan>
+  </text>
 </svg>

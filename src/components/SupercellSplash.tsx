@@ -172,10 +172,11 @@ export default function SupercellSplash({ onComplete }: SupercellSplashProps) {
       className="fixed inset-0 z-[9999] overflow-hidden pointer-events-none select-none touch-none bg-transparent"
     >
       {/* 
-        LAYER 1: THREE STAGGERED LIQUID WAVY CURTAINS
-        Instead of modifying the SVG path d attribute (which jitters and lacks fluid native browser interpolation),
-        we render static, perfectly crafted high-resolution wavy liquid SVG assets inside absolute divs,
-        and animate their translations on the GPU. This is 100% fluid, buttery smooth, and runs at native 60/120fps.
+        LAYER 1: DUAL-LAYERED GOOEY LIQUID PORTAL MASK (Vaporous Sky-Blue Liquid)
+        This implements a true SVG metaball/gooey filter.
+        The sky-blue liquid covers the screen with a circular aperture in the center.
+        Upon activation, the aperture expands like thick, viscous fluid, breaking off
+        organic droplets that stretch and snap away.
       */}
       <div className="absolute inset-0 w-full h-full pointer-events-none">
         
@@ -224,7 +225,6 @@ export default function SupercellSplash({ onComplete }: SupercellSplashProps) {
             />
           </svg>
         </motion.div>
-
       </div>
 
       {/* 

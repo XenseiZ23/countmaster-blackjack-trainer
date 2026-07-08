@@ -37,7 +37,7 @@ export default function Casino() {
             >
               <span className="text-white/15 select-none font-light py-1 text-sm sm:text-base mx-3">|</span>
               <span className="text-sm font-sport font-[800] italic tracking-tight text-white uppercase leading-none">
-                CARD COUNTER <span className="text-amber-400">SIMULATION</span>
+                CASINO <span className="text-amber-400">SIMULATION</span>
               </span>
             </motion.div>
           </div>
@@ -53,19 +53,42 @@ export default function Casino() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
         >
-          <div className="inline-block px-4 py-1.5 bg-amber-950/20 border border-amber-900/30 rounded-full mb-2">
-            <span className="text-[9px] sm:text-[10px] text-amber-300 font-extrabold uppercase tracking-[0.25em] flex items-center gap-1.5 justify-center">
-              <Sparkles size={12} /> Active Roadmap Simulation Mode
-            </span>
-          </div>
-          
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-sport font-[800] italic tracking-tight uppercase leading-none text-white select-none">
             COMING <span className="text-amber-400">SOON</span>
           </h1>
           
-          <p className="text-neutral-400 font-medium text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-            The interactive Casino Simulation mode is currently under active design and development. This mode will allow you to put your counting skills to the test in a realistic casino atmosphere in real-time.
+          <p className="text-neutral-300 font-medium text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+            The ultimate training playground. Designed to simulate the actual pressure of a real blackjack table, where every decision counts.
           </p>
+        </motion.div>
+
+        {/* Comparison Module: Trainer vs Casino */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8"
+        >
+          {/* Trainer Card */}
+          <div className="p-6 sm:p-8 bg-neutral-900/60 border border-white/5 rounded-2xl flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider text-emerald-400">Trainer Mode</h3>
+            </div>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              <strong className="text-white font-medium">Count Speed Training:</strong> Purely focused on training your mental agility and visual reflexes. It helps you memorize card values rapidly without the distraction of playing decisions, perfect for building speed and muscle memory.
+            </p>
+          </div>
+
+          {/* Casino Card */}
+          <div className="p-6 sm:p-8 bg-amber-500/5 border border-amber-500/10 rounded-2xl flex flex-col gap-3 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="flex items-center gap-3">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider text-amber-400">Casino Mode</h3>
+            </div>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              <strong className="text-white font-medium">Realistic & Simultaneous Practice:</strong> A mode where you can play blackjack hands, count cards, and wager fictitiously all at once. At the same time, you must adhere to basic strategy guidelines under changing game situations. The goal is to master all 4 core actions simultaneously: <strong className="text-amber-400 font-semibold">counting, playing, betting, and making perfect choices</strong> under realistic pressure.
+            </p>
+          </div>
         </motion.div>
 
         {/* Feature Preview Cards Grid */}
@@ -78,12 +101,9 @@ export default function Casino() {
             transition={{ delay: 0.1 }}
             className="p-6 bg-neutral-800/40 border border-white/5 rounded-2xl space-y-3 shrink-0"
           >
-            <div className="w-10 h-10 bg-amber-950/20 text-amber-300 border border-amber-900/30 rounded-xl flex items-center justify-center font-mono font-bold text-xs">
-              01
-            </div>
-            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Manual Play Mechanics</h4>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Play actual hands with split logic, double-down options, surrenders, and full live-dealer mechanics.
+            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Fictional Betting</h4>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              Practice sizing your bets fictitiously based on the True Count to manage your virtual bankroll and simulate real advantage-play returns.
             </p>
           </motion.div>
           
@@ -93,12 +113,9 @@ export default function Casino() {
             transition={{ delay: 0.2 }}
             className="p-6 bg-neutral-800/40 border border-white/5 rounded-2xl space-y-3 shrink-0"
           >
-            <div className="w-10 h-10 bg-amber-950/20 text-amber-300 border border-amber-900/30 rounded-xl flex items-center justify-center font-mono font-bold text-xs">
-               02
-            </div>
-            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Betting Systems</h4>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Introduce progressive wagering systems (Martingale, Kelly Criterion) to test with live counting dynamics.
+            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Basic Strategy</h4>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              Make Hit, Stand, Double, Split, or Surrender decisions and get instant verification according to the mathematically optimal basic strategy.
             </p>
           </motion.div>
 
@@ -108,12 +125,9 @@ export default function Casino() {
             transition={{ delay: 0.3 }}
             className="p-6 bg-neutral-800/40 border border-white/5 rounded-2xl space-y-3 shrink-0"
           >
-            <div className="w-10 h-10 bg-amber-950/20 text-amber-300 border border-amber-900/30 rounded-xl flex items-center justify-center font-mono font-bold text-xs">
-               03
-            </div>
-            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Advantage Metrics</h4>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Track multi-round variance charts, bankroll exhaustion alerts, stats telemetry, and custom simulator logs.
+            <h4 className="font-bold text-sm text-white uppercase tracking-wider">Complex Hands</h4>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              Train specifically on difficult scenarios including soft totals (Soft Hands) and pair splitting where most strategy errors typically occur.
             </p>
           </motion.div>
         </div>

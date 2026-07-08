@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Trainer from './pages/Trainer';
 import Casino from './pages/Casino';
 import About from './pages/About';
+import HowToCount from './pages/HowToCount';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/trainer" element={<Trainer />} />
       <Route path="/casino" element={<Casino />} />
       <Route path="/about" element={<About />} />
+      <Route path="/how-to-count" element={<HowToCount />} />
     </Routes>
   );
 }

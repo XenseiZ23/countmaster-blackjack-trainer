@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, ChevronRight, ShieldAlert, LifeBuoy, MessageSquare, Send, Star, X, CheckCircle } from 'lucide-react';
+import { Play, Sparkles, ChevronRight, ShieldAlert, MessageSquare, Send, Star, X, CheckCircle } from 'lucide-react';
 import { AcademyLogo } from '../components/AcademyLogo';
 import trainerBannerImage from '../assets/images/trainer_banner_1779997659022.png';
 import casinoBannerImage from '../assets/images/casino_banner_1779997683634.png';
 
 export default function Home() {
-  const [showSupportModal, setShowSupportModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackCategory, setFeedbackCategory] = useState<string>('Suggestion');
   const [feedbackRating, setFeedbackRating] = useState<number>(5);
@@ -99,12 +98,12 @@ export default function Home() {
               About
             </Link>
             <span className="text-white/10 select-none font-light">|</span>
-            <button 
-              onClick={() => setShowSupportModal(true)}
-              className="hover:text-emerald-300 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer outline-none uppercase font-extrabold py-1"
+            <Link 
+              to="/how-to-count" 
+              className="hover:text-emerald-300 hover:scale-105 active:scale-95 transition-all duration-200 py-1"
             >
-              Support
-            </button>
+              How to Count
+            </Link>
             <span className="text-white/10 select-none font-light">|</span>
             <button 
               onClick={() => setShowFeedbackModal(true)}
@@ -140,7 +139,7 @@ export default function Home() {
           </h1>
           
           <p className="text-neutral-400 font-normal text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-4">
-            Hone card counting speed, test your math conversions, and build rock-solid strategy reflexes using memory simulator tools built for mathematical edge.
+            Hone card counting speed, test your math conversions, and build strategy reflexes to gain an advantage in blackjack using memory simulator tools built for mathematical edge.
           </p>
         </motion.div>
 
@@ -262,92 +261,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Support Modal Overlay */}
-      <AnimatePresence>
-        {showSupportModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden transform-gpu">
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowSupportModal(false)}
-              className="absolute inset-0 bg-black/85 backdrop-blur-md"
-            />
 
-            {/* Modal Body */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative z-10 w-full max-w-lg bg-neutral-900/90 border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl flex flex-col gap-5 max-h-[88vh] sm:max-h-[92vh] overflow-hidden backdrop-blur-2xl"
-            >
-              {/* Subtle decorative glow */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 select-none relative z-10">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 shadow-inner shrink-0">
-                    <LifeBuoy size={18} className="text-emerald-400" />
-                  </div>
-                  <div className="text-left">
-                    <h2 className="text-base sm:text-lg font-bold tracking-wider uppercase text-white leading-none">Support Center</h2>
-                    <p className="text-[9px] uppercase tracking-widest text-emerald-400 font-bold leading-none mt-1 sm:mt-1.5 font-sans">Blackjack Academy Help</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setShowSupportModal(false)}
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors cursor-pointer outline-none shrink-0"
-                  aria-label="Close"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Scrollable Container (Fully functional list of FAQs) */}
-              <div className="flex-1 overflow-y-auto pr-1.5 space-y-3 relative z-10 text-left scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <h4 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-neutral-200">How do I track the running count?</h4>
-                  <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed font-light">
-                    Each card holds a specific weighting value: cards 2-6 add +1, high cards 10-A subtract -1, and 7-9 are neutral. Add these values sequentially as each card is dealt to keep the dynamic sum.
-                  </p>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <h4 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-neutral-200">What is the difference between modes?</h4>
-                  <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed font-light">
-                    Standard Mode serves continuous hands from an infinite shoe for continuous practice, whereas Advanced Mode simulates physical physical decks with realistic deck depth and penetration thresholds.
-                  </p>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <h4 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-neutral-205">How does the shoe reset?</h4>
-                  <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed font-light">
-                    In Advanced Mode, after deck penetration exceeds configured limits, dealing will pause. Simply verify your current count score, and select "New Shoe" to shuffle a fresh multi-deck shoe.
-                  </p>
-                </div>
-              </div>
-
-              {/* Help footer block */}
-              <div className="p-4 sm:p-5 rounded-xl bg-neutral-950/60 border border-neutral-850/50 text-center space-y-1.5 relative z-10 select-none shrink-0">
-                <h4 className="font-bold text-xs sm:text-sm text-white font-sans uppercase tracking-tight">Need Additional Strategy Help?</h4>
-                <p className="text-[10px] sm:text-[11px] text-neutral-400 max-w-sm mx-auto leading-relaxed">
-                  Connect directly with our training team for custom support at <span className="text-emerald-355 font-bold font-mono">support@hilotrainer.dev</span>
-                </p>
-              </div>
-
-              {/* Close Button */}
-              <button 
-                onClick={() => setShowSupportModal(false)}
-                className="w-full py-3.5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/10 rounded-xl font-bold text-xs uppercase tracking-widest transition-all cursor-pointer outline-none flex items-center justify-center gap-2 select-none relative z-10 active:scale-[0.98] shrink-0"
-              >
-                Close Support
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Feedback Modal Overlay */}
       <AnimatePresence>

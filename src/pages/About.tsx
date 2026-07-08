@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, BookOpen, ShieldAlert, Award, Sparkles, Play } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, Sparkles, Play, ShieldCheck, HelpCircle } from 'lucide-react';
 import { AcademyLogo } from '../components/AcademyLogo';
 
 export default function About() {
@@ -49,23 +49,18 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
         >
-          <div className="inline-block px-3 py-1 bg-emerald-950/20 border border-emerald-900/30 rounded-full mb-3">
-            <span className="text-[10px] md:text-xs text-emerald-300 font-extrabold uppercase tracking-[0.2em] flex items-center gap-2">
-              <Award size={12} /> Technical Training Blueprint
-            </span>
-          </div>
           <h1 className="text-4xl sm:text-5xl font-sport font-[800] italic tracking-tight text-white uppercase">
             About the Trainer
           </h1>
           <p className="text-neutral-400 font-medium text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            A state-of-the-art simulator designed for professional memory retention training. Hone card counting speed, true count calculation, and structural blackjack analysis without financial risk.
+            Understand the application, our terms of usage, and the core principles of responsible training.
           </p>
         </motion.div>
 
         {/* Info Grid - Bento style */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           
-          {/* Card 1: What is Card Counting Trainer */}
+          {/* Card 1: The Application */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -77,11 +72,11 @@ export default function About() {
               <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">The Application</h2>
             </div>
             <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-              This trainer simulates real-world high-stakes blackjack action minus any gambling aspect. By automating multiple computer players, managing custom dealer dealing rates, and requiring active mathematical verification of the shoe state, the software serves as a modern gymnasium for card counters of all skill levels.
+              This trainer is a state-of-the-art mental gym built to simulate blackjack action in real-time. By managing computer players, simulating deck penetration, and requiring mathematical feedback of the count, the software is purely a cognitive training system. There is no gambling, no real money wagering, and no deposit mechanics.
             </p>
           </motion.div>
 
-          {/* Card 2: Training Objectives */}
+          {/* Card 2: Terms and Conditions */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -89,95 +84,46 @@ export default function About() {
             className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[1.5rem] p-6 sm:p-8 flex flex-col gap-4 shadow-xl"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 shadow-inner">
-                <BookOpen size={20} className="text-blue-400" />
+              <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
+                <ShieldCheck size={20} className="text-emerald-400" />
               </div>
-              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">Training Goals</h2>
+              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">Terms of Use</h2>
             </div>
             <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-              Develop elite reflex speeds to maintain the count during fast-paced dealing intervals. In **Infinite Mode**, practitioners build raw endurance. In **Advanced Mode**, they must combine count tracking with card penetration analysis (True Count) representing genuine multi-deck environments.
+              By using this trainer, you agree that it is provided strictly for educational, cognitive, and analytical purposes. You assume full personal responsibility for how you utilize these mathematical concepts. We do not endorse, facilitate, or promote real-money gaming or casino betting.
             </p>
           </motion.div>
         </div>
 
-        {/* Card counting interactive chart panel */}
+        {/* Responsible Play & Continuous Practice Panel */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[2rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-950/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-950/25 rounded-full blur-3xl pointer-events-none" />
           
           <div className="flex flex-col gap-6 text-center md:text-left relative z-10">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="space-y-1">
-                <h2 className="text-xl font-sport font-[800] italic tracking-tight uppercase text-white">The Card Counting Strategy</h2>
-                <p className="text-xs text-neutral-400">The global industry standard system for mathematical card estimation.</p>
-              </div>
-              <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                Additive Formula
+                <h2 className="text-xl font-sport font-[800] italic tracking-tight uppercase text-white flex items-center gap-2 justify-center md:justify-start">
+                  <ShieldAlert size={20} className="text-emerald-400" /> Responsible Practice
+                </h2>
+                <p className="text-xs text-neutral-400">Card counting is a mental discipline, not a shortcut to wealth.</p>
               </div>
             </div>
 
-            <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-              Under card counting systems, every drawn card is categorized into one of three numerical values. Keeping a sum totaling these values provides the absolute statistical advantage over the table.
-            </p>
-
-            {/* Strategy Boxes */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-              <div className="bg-emerald-950/30 border border-emerald-900/40 rounded-2xl p-5 text-center transition-all hover:bg-emerald-950/45">
-                <div className="text-3xl font-black text-emerald-300 mb-2">+1</div>
-                <div className="text-xs font-bold text-white uppercase tracking-wider mb-1">Low Cards</div>
-                <div className="text-[10px] text-neutral-400 font-mono">2, 3, 4, 5, 6</div>
-                <p className="text-[9px] text-neutral-500 mt-2 font-medium">Increases advantage when deleted</p>
-              </div>
-
-              <div className="bg-neutral-900/40 border border-neutral-700/30 rounded-2xl p-5 text-center transition-all hover:bg-neutral-950/40">
-                <div className="text-3xl font-black text-white/55 mb-2">0</div>
-                <div className="text-xs font-bold text-white uppercase tracking-wider mb-1">Middle Cards</div>
-                <div className="text-[10px] text-neutral-400 font-mono">7, 8, 9</div>
-                <p className="text-[9px] text-neutral-500 mt-2 font-medium">Has zero impact on math margins</p>
-              </div>
-
-              <div className="bg-red-900/15 border border-red-500/30 rounded-2xl p-5 text-center transition-all hover:bg-red-950/25">
-                <div className="text-3xl font-black text-red-500 mb-2">-1</div>
-                <div className="text-xs font-bold text-white uppercase tracking-wider mb-1">High Cards</div>
-                <div className="text-[10px] text-neutral-400 font-mono">10, J, Q, K, A</div>
-                <p className="text-[9px] text-neutral-500 mt-2 font-medium">Decreases advantage when deleted</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Tactical Pro Tips */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-neutral-800/40 backdrop-blur-sm border border-white/5 rounded-[1.5rem] p-6 sm:p-8 flex flex-col gap-6"
-        >
-          <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row border-b border-white/5 pb-4">
-            <div className="w-12 h-12 bg-emerald-950/20 border border-emerald-900/30 rounded-2xl flex items-center justify-center">
-              <Sparkles size={22} className="text-emerald-300" />
-            </div>
-            <div>
-              <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">Tactical Training Tips</h3>
-              <p className="text-[11px] text-neutral-400 mt-1 leading-relaxed">Boost your cognition and reflexes with these professional training guidelines.</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-neutral-400 leading-relaxed">
-            <div className="space-y-1">
-              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-300">1. Adjust dealing speed</div>
-              <p>Start with the "Slow" setting to smoothly reinforce mental addition, then dial it up to "Intermediate" or "Fast" as your reaction times sharpen.</p>
-            </div>
-            <div className="space-y-1">
-              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-300">2. Track the discard tray</div>
-              <p>In Advanced Mode, observe card penetration in the discard tray to convert your running count to True Count. Knowing remaining decks is key to success!</p>
-            </div>
-            <div className="space-y-1">
-              <div className="font-bold text-white uppercase text-[10px] tracking-wider text-emerald-300">3. Execute basic strategy</div>
-              <p>Counting cards is only effective when paired with flawless action. Play each hand logically in accordance with standard blackjack basic strategy rules.</p>
+            <div className="space-y-4 text-neutral-400 text-xs sm:text-sm leading-relaxed font-light">
+              <p>
+                Card counting is a mathematical concept based on tracking the ratio of high-to-low cards left in the dealer's shoe. While this simulator is an exceptional aid to sharpen your focus, speed, and accuracy, <strong className="text-white font-semibold">success in real-world scenarios requires extensive practice, continuous discipline, and high personal responsibility.</strong>
+              </p>
+              <p>
+                Having theoretical knowledge is not enough. Maintaining focus under loud, high-pressure environments requires hundreds of hours of manual training. More importantly, statistical variance means no mathematical strategy guarantees short-term positive outcomes. 
+              </p>
+              <p>
+                We urge all practitioners to treat card counting solely as an intellectual and cognitive exercise. Never wager money you cannot afford to lose, play responsibly, and respect local regulations and casino policies at all times.
+              </p>
             </div>
           </div>
         </motion.div>
@@ -191,9 +137,6 @@ export default function About() {
             <span>Launch Practice</span>
             <Play size={16} fill="currentColor" />
           </Link>
-          <p className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 font-bold flex items-center gap-1.5 leading-none">
-            <ShieldAlert size={10} className="text-emerald-500/50" /> Training Simulation only • Play Wisely
-          </p>
         </div>
 
       </main>
