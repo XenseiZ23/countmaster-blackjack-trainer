@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XCircle, Play, RotateCcw, Zap, Database, Users, Gauge, LifeBuoy, MessageSquare, Send, CheckCircle, ArrowLeft, Star } from 'lucide-react';
 import { GameMode, GameStatus } from '../types';
+import { useLanguage } from '../lib/LanguageContext';
 
 interface SettingsOverlayProps {
   showSettings: boolean;
@@ -34,10 +35,12 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
   setShowSettings,
   resetGame
 }) => {
+  const { t, language } = useLanguage();
+
   const speedLevels = [
-    { name: 'Slow', value: 2500, pos: 0, intensity: 'Basic', color: 'text-emerald-400 font-bold' },
-    { name: 'Intermediate', value: 850, pos: 50, intensity: 'Standard', color: 'text-amber-400 font-bold' },
-    { name: 'Fast', value: 400, pos: 100, intensity: 'Expert Level', color: 'text-rose-400 font-bold' },
+    { name: language === 'es' ? 'Lento' : 'Slow', value: 2500, pos: 0, intensity: language === 'es' ? 'Básico' : 'Basic', color: 'text-emerald-400 font-bold' },
+    { name: language === 'es' ? 'Intermedio' : 'Intermediate', value: 850, pos: 50, intensity: language === 'es' ? 'Estándar' : 'Standard', color: 'text-amber-400 font-bold' },
+    { name: language === 'es' ? 'Rápido' : 'Fast', value: 400, pos: 100, intensity: language === 'es' ? 'Nivel Experto' : 'Expert Level', color: 'text-rose-400 font-bold' },
   ];
 
   const mapSliderToSpeed = (val: number) => {
@@ -78,10 +81,10 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               <Link 
                 to="/" 
                 className="text-neutral-400 hover:text-neutral-200 transition-colors flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest"
-                title="Back to Main Menu"
+                title={language === 'es' ? "Volver al Menú Principal" : "Back to Main Menu"}
               >
                 <ArrowLeft size={14} className="stroke-[3.5]" />
-                <span>Menu</span>
+                <span>{language === 'es' ? 'Menú' : 'Menu'}</span>
               </Link>
             ) : (
               <div /> // Spacer if not setup
@@ -94,34 +97,38 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
                   setShowSettings(false);
                 }}
                 className="text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest"
-                title="Close Settings"
+                title={language === 'es' ? "Cerrar Ajustes" : "Close Settings"}
               >
-                <span>Close</span>
+                <span>{t('trainer.settingsCancel')}</span>
                 <XCircle size={18} />
               </button>
             )}
           </div>
           
           <div className="p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800/60 max-w-sm mx-auto select-none">
-            <p className="text-[10px] text-zinc-300 font-bold uppercase tracking-widest leading-relaxed">Training & Practice Software</p>
-            <p className="text-[10px] text-neutral-500 font-medium leading-relaxed mt-1">This application does not allow real betting or money. It is exclusively for card counting technical practice.</p>
+            <p className="text-[10px] text-zinc-300 font-bold uppercase tracking-widest leading-relaxed">
+              {language === 'es' ? 'Software de Práctica y Entrenamiento' : 'Training & Practice Software'}
+            </p>
+            <p className="text-[10px] text-neutral-500 font-medium leading-relaxed mt-1">
+              {language === 'es' ? 'Esta aplicación no permite apuestas ni dinero real. Es exclusivamente para práctica técnica de conteo de cartas.' : 'This application does not allow real betting or money. It is exclusively for card counting technical practice.'}
+            </p>
           </div>
 
           <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent uppercase italic">
-            Settings
+            {t('trainer.settingsTitle')}
           </h1>
           <p className="text-neutral-400 text-sm font-medium max-w-md mx-auto leading-relaxed">
-            {showSettings ? 'Modify your current table settings.' : 'Adjust your table parameters for professional training.'}
+            {t('trainer.settingsDesc')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-fadeIn">
           <div className="space-y-6">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Zap size={14} /> Training Mode</div>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Zap size={14} /> {t('trainer.settingsMode')}</div>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { id: 'standard', name: 'Standard', desc: 'Infinite', activeStyle: 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-950/40 scale-[1.03]' },
-                { id: 'advanced', name: 'Advanced', desc: 'Calculator', activeStyle: 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-lg shadow-amber-950/40 scale-[1.03]' }
+                { id: 'standard', name: language === 'es' ? 'Estándar' : 'Standard', desc: language === 'es' ? 'Infinito' : 'Infinite', activeStyle: 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-950/40 scale-[1.03]' },
+                { id: 'advanced', name: language === 'es' ? 'Avanzado' : 'Advanced', desc: language === 'es' ? 'Calculadora' : 'Calculator', activeStyle: 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-lg shadow-amber-950/40 scale-[1.03]' }
               ].map(mode => (
                 <button
                   key={mode.id}
@@ -136,7 +143,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Database size={14} /> Number of Decks</div>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Database size={14} /> {t('trainer.settingsDecks')}</div>
             <div className="grid grid-cols-4 gap-2">
               {[2, 4, 6, 8].map(count => (
                 <button
@@ -153,7 +160,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="space-y-6">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Users size={14} /> Players at Table</div>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Users size={14} /> {t('trainer.settingsPlayers')}</div>
             <div className="grid grid-cols-5 gap-2">
               {[1, 2, 3, 4, 5].map(num => (
                 <button
@@ -168,7 +175,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Gauge size={14} /> Dealing Speed</div>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-400 uppercase tracking-widest text-[10px] font-bold"><Gauge size={14} /> {t('trainer.settingsSpeed')}</div>
             <div className="grid grid-cols-3 gap-2">
               {speedLevels.map(s => {
                 const isActive = Math.abs(speed - s.value) < 10;
@@ -190,13 +197,17 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
         <div className="space-y-12 pt-10 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center bg-white/5 px-8 py-6 rounded-[2rem] border border-white/5 gap-6">
             <div className="space-y-1 text-center md:text-left">
-              <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Dealing Pace</div>
+              <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">
+                {language === 'es' ? 'Ritmo de Reparto' : 'Dealing Pace'}
+              </div>
               <div className="text-3xl font-bold font-mono text-white tabular-nums">
-                {(speed / 1000).toFixed(2)}<span className="text-xs text-neutral-500 px-2 font-sans italic">sec</span>
+                {(speed / 1000).toFixed(2)}<span className="text-xs text-neutral-500 px-2 font-sans italic">{language === 'es' ? 'seg' : 'sec'}</span>
               </div>
             </div>
             <div className="text-center md:text-right">
-              <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">Intensity</div>
+              <div className="text-[10px] uppercase tracking-widest font-extrabold text-neutral-500">
+                {language === 'es' ? 'Intensidad' : 'Intensity'}
+              </div>
               <div className={`text-base font-bold uppercase tracking-wider transition-opacity duration-300 ${currentLevel.color}`}>{currentLevel.intensity}</div>
             </div>
           </div>
@@ -238,7 +249,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
             onClick={() => { resetGame('idle'); setShowSettings(false); }}
             className="w-full py-6 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] border border-white/15 rounded-[2rem] text-xl font-black uppercase tracking-wider shadow-2xl transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-4 text-white"
           >
-            {status === 'setup' ? 'Start Training' : 'Apply & Return'} <Play fill="currentColor" size={24} />
+            {status === 'setup' ? t('howToCount.startTraining') : t('trainer.settingsApply')} <Play fill="currentColor" size={24} />
           </button>
 
           {showSettings && (
@@ -246,7 +257,7 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               onClick={() => { resetGame('setup'); setShowSettings(false); }}
               className="w-full py-4 text-neutral-400 hover:text-white transition-colors uppercase tracking-[0.2em] font-bold text-xs flex items-center justify-center gap-2"
             >
-              <RotateCcw size={14} /> Exit & Reset Game
+              <RotateCcw size={14} /> {language === 'es' ? 'Salir y Reiniciar Juego' : 'Exit & Reset Game'}
             </button>
           )}
         </div>

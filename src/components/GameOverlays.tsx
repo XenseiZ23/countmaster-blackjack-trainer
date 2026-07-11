@@ -5,6 +5,7 @@ import { Play } from 'lucide-react';
 import { FeedbackPanel } from './FeedbackPanel';
 import { GameStatus, Card } from '../types';
 import { AcademyLogo } from './AcademyLogo';
+import { useLanguage } from '../lib/LanguageContext';
 
 interface GameOverlaysProps {
   status: GameStatus;
@@ -37,6 +38,8 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
   verifyCount,
   continueAfterError
 }) => {
+  const { t, language } = useLanguage();
+
   return (
     <AnimatePresence>
       {isPaused && (
@@ -52,8 +55,12 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
             className="flex flex-col items-center gap-8 max-w-md px-6"
            >
              <div className="text-center space-y-4">
-               <h2 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">Pause</h2>
-               <p className="text-neutral-400 font-medium text-xs sm:text-sm tracking-wide leading-relaxed">Training session paused. Table data hidden to maintain count integrity.</p>
+                <h2 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+                  {language === 'es' ? 'Pausa' : 'Pause'}
+                </h2>
+                <p className="text-neutral-400 font-medium text-xs sm:text-sm tracking-wide leading-relaxed">
+                  {language === 'es' ? 'Sesión de entrenamiento pausada. Los datos de la mesa están ocultos para mantener la integridad del conteo.' : 'Training session paused. Table data hidden to maintain count integrity.'}
+                </p>
              </div>
 
              <button 
@@ -61,13 +68,13 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
               className="group relative px-12 py-5 rounded-2xl bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 font-black uppercase italic tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
              >
                <div className="flex items-center gap-4">
-                 <span>Resume</span>
+                 <span>{language === 'es' ? 'Reanudar' : 'Resume'}</span>
                  <Play size={18} fill="currentColor" />
                </div>
                <div className="absolute inset-0 rounded-2xl border border-white/20 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300" />
              </button>
            </motion.div>
-        </motion.div>
+         </motion.div>
       )}
 
       {status === 'idle' && !isPaused && (
@@ -82,7 +89,9 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
             className="group relative px-12 py-5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center gap-2"
           >
             <Play fill="currentColor" size={48} className="text-white" />
-            <span className="font-bold text-xl uppercase tracking-widest">Start Hand</span>
+            <span className="font-bold text-xl uppercase tracking-widest">
+              {language === 'es' ? 'Iniciar Mano' : 'Start Hand'}
+            </span>
           </button>
         </motion.div>
       )}
@@ -100,17 +109,23 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
             </div>
             
             <div className="space-y-4">
-              <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">End of Shoe</h2>
+              <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">
+                {language === 'es' ? 'Fin del Zapato' : 'End of Shoe'}
+              </h2>
               <p className="text-neutral-400 text-sm font-medium leading-relaxed italic">
-                You've reached the deck penetration cut card. Not enough cards to guarantee a full hand without affecting true count integrity.
+                {language === 'es' ? 'Has alcanzado la carta de corte de penetración de la baraja. No quedan suficientes cartas para garantizar una mano completa sin afectar la integridad del conteo real.' : "You've reached the deck penetration cut card. Not enough cards to guarantee a full hand without affecting true count integrity."}
               </p>
               <div className="grid grid-cols-2 gap-3 w-full bg-white/5 border border-white/10 p-4 rounded-2xl">
                 <div className="text-center">
-                  <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Running Count</p>
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">
+                    {language === 'es' ? 'Conteo Corriente' : 'Running Count'}
+                  </p>
                   <p className="text-2xl font-mono font-bold text-white leading-none">{runningCount >= 0 ? `+${runningCount}` : runningCount}</p>
                 </div>
                 <div className="text-center border-l border-white/10">
-                  <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">True Count</p>
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">
+                    {language === 'es' ? 'Conteo Real' : 'True Count'}
+                  </p>
                   <p className="text-2xl font-mono font-bold text-white leading-none">
                     {(runningCount / Math.max(0.25, deck.length / 52)).toFixed(1)}
                   </p>
@@ -123,14 +138,14 @@ export const GameOverlays: React.FC<GameOverlaysProps> = ({
                 onClick={() => resetGame('idle')}
                 className="w-full py-5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] text-white border border-white/15 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl active:scale-95"
               >
-                New Shoe (Same Settings)
+                {language === 'es' ? 'Nuevo Zapato (Mismos Ajustes)' : 'New Shoe (Same Settings)'}
               </button>
               
               <button 
                 onClick={() => setShowSettings(true)}
                 className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 text-neutral-300 hover:text-white shadow-lg"
               >
-                Change Settings
+                {language === 'es' ? 'Cambiar Ajustes' : 'Change Settings'}
               </button>
             </div>
           </div>

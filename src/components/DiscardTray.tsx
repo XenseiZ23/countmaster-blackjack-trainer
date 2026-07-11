@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../lib/LanguageContext';
 
 interface DiscardTrayProps {
   cardsInDiscard: number;
@@ -9,6 +10,7 @@ interface DiscardTrayProps {
 }
 
 export const DiscardTray: React.FC<DiscardTrayProps> = ({ cardsInDiscard, deckCount, isPaused }) => {
+  const { language } = useLanguage();
   if (isPaused) return null;
 
   return (
@@ -38,8 +40,12 @@ export const DiscardTray: React.FC<DiscardTrayProps> = ({ cardsInDiscard, deckCo
       </div>
       
       <div className="flex flex-col items-center opacity-40 group-hover:opacity-100 transition-opacity">
-        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Discard</span>
-        <span className="text-[9px] font-bold text-white/50 tabular-nums">{cardsInDiscard} cards</span>
+        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">
+          {language === 'es' ? 'Descarte' : 'Discard'}
+        </span>
+        <span className="text-[9px] font-bold text-white/50 tabular-nums">
+          {cardsInDiscard} {language === 'es' ? 'cartas' : 'cards'}
+        </span>
       </div>
     </motion.div>
   );

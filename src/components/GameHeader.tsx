@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Trophy, Play, Pause, Settings, ArrowLeft } from 'lucide-react';
 import { GameStats } from '../types';
 import { AcademyLogo } from './AcademyLogo';
+import { useLanguage } from '../lib/LanguageContext';
 
 interface GameHeaderProps {
   stats: GameStats;
@@ -27,8 +28,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   setShowSettings,
   onBackClick
 }) => {
+  const { t, language, setLanguage } = useLanguage();
+
   return (
-    <header className="px-3 py-2.5 sm:p-4 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-b-white/10 z-10 shrink-0">
+    <header className="px-3 py-2 sm:px-4 sm:py-2.5 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-b-white/10 z-10 shrink-0">
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Explicit, high-contrast back navigation option */}
         <Link 
@@ -40,10 +43,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             }
           }}
           className="p-2 sm:px-3 sm:py-1.5 bg-neutral-900/80 hover:bg-neutral-800 border border-white/10 hover:border-emerald-900/30 rounded-xl flex items-center justify-center gap-1.5 text-neutral-300 hover:text-emerald-300 text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-95 shadow-md"
-          aria-label="Back"
+          aria-label={t('common.back')}
         >
           <ArrowLeft size={14} className="stroke-[2.5]" />
-          <span className="hidden md:inline">Back</span>
+          <span className="hidden md:inline">{t('common.back')}</span>
         </Link>
 
         <div className="w-px h-6 bg-white/10 md:block hidden" />
@@ -69,10 +72,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             <div className="ml-1.5 sm:ml-0 flex flex-col justify-center">
               {/* Desktop Header */}
               <h1 className="text-sm font-sport font-[800] italic tracking-tight text-white uppercase leading-none hidden sm:block">
-                Card <span className="text-emerald-400">Counter</span>
+                {t('trainer.title')} <span className="text-emerald-400">{t('trainer.titleCounter')}</span>
               </h1>
               <div className="hidden sm:flex items-center gap-2 text-[9px] uppercase tracking-widest text-emerald-300 mt-1">
-                <Trophy size={10} /> Accuracy: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
+                <Trophy size={10} /> {t('trainer.accuracy')}: {stats.accuracy}% ({stats.correctGuesses}/{stats.totalRounds})
               </div>
 
               {/* Mobile Compact Accuracy Badge */}
@@ -87,17 +90,17 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
       <div className="flex items-center gap-1 sm:gap-2">
         <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-4 py-1.5 rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner mr-0.5 sm:mr-2">
           <div className="flex flex-col items-center justify-center text-center min-w-[24px] sm:min-w-[28px]">
-            <span className="text-[6.5px] sm:text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">Round</span>
+            <span className="text-[6.5px] sm:text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">{t('trainer.round')}</span>
             <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white leading-none">{totalRounds + 1}</span>
           </div>
           <div className="w-px h-5 bg-white/10" />
           <div className="flex flex-col items-center justify-center text-center min-w-[28px] sm:min-w-[32px]">
-            <span className="text-[6.5px] sm:text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">Pace</span>
+            <span className="text-[6.5px] sm:text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">{t('trainer.pace')}</span>
             <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white leading-none">{speed}ms</span>
           </div>
           <div className="w-px h-5 bg-white/10 hidden sm:block" />
           <div className="hidden sm:flex flex-col items-center justify-center text-center min-w-[28px]">
-            <span className="text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">Players</span>
+            <span className="text-[7px] text-neutral-400 uppercase font-black tracking-widest mb-0.5">{t('trainer.players')}</span>
             <span className="text-[11px] font-mono font-bold text-white leading-none">{playerCount}</span>
           </div>
         </div>
@@ -105,7 +108,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
         <button 
           onClick={() => setIsPaused(!isPaused)}
           className={`p-2 rounded-xl border transition-all duration-300 flex items-center justify-center shadow-md ${isPaused ? 'bg-white/15 border-white/30 text-white scale-105' : 'bg-white/5 hover:bg-white/10 border-white/10 text-neutral-300 hover:text-white'}`}
-          title={isPaused ? "Resume Game" : "Pause Game"}
+          title={isPaused ? (language === 'es' ? "Reanudar Juego" : "Resume Game") : (language === 'es' ? "Pausar Juego" : "Pause Game")}
         >
           {isPaused ? <Play size={16} fill="currentColor" /> : <Pause size={16} />}
         </button>
@@ -113,7 +116,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
         <button 
           onClick={() => setShowSettings(true)}
           className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-neutral-300 hover:text-white transition-all shadow-md animate-none"
-          title="Trainer Settings"
+          title={t('trainer.settingsTitle')}
         >
           <Settings size={16} />
         </button>

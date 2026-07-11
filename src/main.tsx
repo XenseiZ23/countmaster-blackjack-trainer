@@ -6,14 +6,17 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import App from './App.tsx';
+import { LanguageProvider } from './lib/LanguageContext.tsx';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
-      <Analytics />
-      <SpeedInsights />
+      <LanguageProvider>
+        <App />
+        <Analytics />
+        <SpeedInsights />
+      </LanguageProvider>
     </BrowserRouter>
   </StrictMode>,
 );

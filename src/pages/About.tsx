@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ShieldAlert, Sparkles, Play, ShieldCheck, HelpCircle } from 'lucide-react';
 import { AcademyLogo } from '../components/AcademyLogo';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function About() {
+  const { t, language, setLanguage } = useLanguage();
+
   return (
     <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col justify-between overflow-x-hidden transform-gpu relative">
       {/* Classic Casino Green Felt Backdrop */}
@@ -14,28 +17,31 @@ export default function About() {
       </div>
 
       {/* Header Bar */}
-      <header className="relative z-10 w-full px-5 py-6 sm:px-8 border-b border-white/5 bg-black/80 backdrop-blur-md">
+      <header className="relative z-10 w-full px-5 py-3 sm:px-8 border-b border-white/5 bg-black/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
           <Link 
             to="/"
             className="group inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] uppercase tracking-widest font-extrabold text-neutral-300 hover:text-white hover:bg-white/10 active:scale-95 transition-all shadow-md"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Home</span>
+            <span>{t('common.backToHome')}</span>
           </Link>
-          <div className="flex items-center select-none group/brand cursor-default">
-            <AcademyLogo size="sm" />
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 'auto', opacity: 1 }}
-              transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-              className="overflow-hidden flex items-center whitespace-nowrap"
-            >
-              <span className="text-white/15 select-none font-light py-1 text-sm sm:text-base mx-3">|</span>
-              <span className="text-sm font-sport font-[800] italic tracking-tight text-white uppercase leading-none">
-                CARD COUNTING <span className="text-emerald-600">ACADEMY</span>
-              </span>
-            </motion.div>
+
+          <div className="flex items-center gap-6">
+            <div className="flex items-center select-none group/brand cursor-default">
+              <AcademyLogo size="sm" />
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 'auto', opacity: 1 }}
+                transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                className="overflow-hidden flex items-center whitespace-nowrap"
+              >
+                <span className="text-white/15 select-none font-light py-1 text-sm sm:text-base mx-3">|</span>
+                <span className="text-sm font-sport font-[800] italic tracking-tight text-white uppercase leading-none">
+                  CARD COUNTING <span className="text-emerald-600">ACADEMY</span>
+                </span>
+              </motion.div>
+            </div>
           </div>
         </div>
       </header>
@@ -49,11 +55,11 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
         >
-          <h1 className="text-4xl sm:text-5xl font-sport font-[800] italic tracking-tight text-white uppercase">
-            About the Trainer
+          <h1 className="text-4xl sm:text-5xl font-sport font-[800] italic tracking-tight text-white uppercase text-stroke-black-md">
+            {t('about.title')}
           </h1>
           <p className="text-neutral-400 font-medium text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Understand the application, our terms of usage, and the core principles of responsible training.
+            {t('about.desc')}
           </p>
         </motion.div>
 
@@ -69,10 +75,10 @@ export default function About() {
           >
             <div className="flex items-center gap-3">
               <AcademyLogo size="sm" />
-              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">The Application</h2>
+              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">{t('about.theAppTitle')}</h2>
             </div>
             <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-              This trainer is a state-of-the-art mental gym built to simulate blackjack action in real-time. By managing computer players, simulating deck penetration, and requiring mathematical feedback of the count, the software is purely a cognitive training system. There is no gambling, no real money wagering, and no deposit mechanics.
+              {t('about.theAppDesc')}
             </p>
           </motion.div>
 
@@ -87,10 +93,10 @@ export default function About() {
               <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <ShieldCheck size={20} className="text-emerald-400" />
               </div>
-              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">Terms of Use</h2>
+              <h2 className="text-lg font-sport font-[800] italic tracking-tight uppercase text-white">{t('about.termsTitle')}</h2>
             </div>
             <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-              By using this trainer, you agree that it is provided strictly for educational, cognitive, and analytical purposes. You assume full personal responsibility for how you utilize these mathematical concepts. We do not endorse, facilitate, or promote real-money gaming or casino betting.
+              {t('about.termsDesc')}
             </p>
           </motion.div>
         </div>
@@ -108,21 +114,21 @@ export default function About() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="space-y-1">
                 <h2 className="text-xl font-sport font-[800] italic tracking-tight uppercase text-white flex items-center gap-2 justify-center md:justify-start">
-                  <ShieldAlert size={20} className="text-emerald-400" /> Responsible Practice
+                  <ShieldAlert size={20} className="text-emerald-400" /> {t('about.responsiblePractice')}
                 </h2>
-                <p className="text-xs text-neutral-400">Card counting is a mental discipline, not a shortcut to wealth.</p>
+                <p className="text-xs text-neutral-400">{t('about.responsibleSubtitle')}</p>
               </div>
             </div>
 
             <div className="space-y-4 text-neutral-400 text-xs sm:text-sm leading-relaxed font-light">
               <p>
-                Card counting is a mathematical concept based on tracking the ratio of high-to-low cards left in the dealer's shoe. While this simulator is an exceptional aid to sharpen your focus, speed, and accuracy, <strong className="text-white font-semibold">success in real-world scenarios requires extensive practice, continuous discipline, and high personal responsibility.</strong>
+                {t('about.responsibleP1')}
               </p>
               <p>
-                Having theoretical knowledge is not enough. Maintaining focus under loud, high-pressure environments requires hundreds of hours of manual training. More importantly, statistical variance means no mathematical strategy guarantees short-term positive outcomes. 
+                {t('about.responsibleP2')}
               </p>
               <p>
-                We urge all practitioners to treat card counting solely as an intellectual and cognitive exercise. Never wager money you cannot afford to lose, play responsibly, and respect local regulations and casino policies at all times.
+                {t('about.responsibleP3')}
               </p>
             </div>
           </div>
@@ -134,23 +140,43 @@ export default function About() {
             to="/"
             className="group relative px-12 py-5 rounded-2xl bg-gradient-to-br from-[#124d3a] to-[#0d3b2c] hover:from-[#175b45] hover:to-[#124d3a] text-emerald-100 border border-emerald-700/20 font-black uppercase italic tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg flex items-center gap-3"
           >
-            <span>Launch Practice</span>
+            <span>{t('about.launchPractice')}</span>
             <Play size={16} fill="currentColor" />
           </Link>
         </div>
 
       </main>
 
+      {/* Bottom-Left Language Switcher (Outside, resting flush on top of the footer) */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto px-5 sm:px-8 pt-0 pb-0 flex justify-start items-center select-none">
+        <div className="flex items-center gap-2 border-b-2 border-transparent pb-1.5 translate-y-[2px]">
+          <button
+            onClick={() => setLanguage('en')}
+            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'en' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
+            title="English"
+          >
+            🇺🇸
+          </button>
+          <button
+            onClick={() => setLanguage('es')}
+            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'es' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
+            title="Español"
+          >
+            🇪🇸
+          </button>
+        </div>
+      </div>
+
       {/* Footer Info */}
-      <footer className="relative z-10 w-full bg-black/80 border-t border-white/5 py-8 px-4 sm:px-8 flex flex-col items-center justify-center gap-3.5 text-[10px] tracking-wider select-none shrink-0">
+      <footer className="relative z-10 w-full bg-black/80 border-t border-white/5 py-4 px-5 sm:px-8 flex flex-col items-center justify-center gap-3 text-[10px] tracking-wider select-none shrink-0">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 text-neutral-500 font-medium text-center">
-          <span>© 2026 <span className="text-neutral-400 font-semibold tracking-widest">BLACKJACK CARD COUNTER TRAINER</span>. ALL RIGHTS RESERVED.</span>
+          <span>© 2026 <span className="text-neutral-400 font-semibold tracking-widest">{t('home.title')} {t('home.trainer')}</span>. {t('common.allRights')}.</span>
           <span className="text-white/10 hidden sm:inline">|</span>
-          <span className="text-neutral-500 tracking-widest text-[9px]">VERSION 1.2.0</span>
+          <span className="text-neutral-500 tracking-widest text-[9px]">{t('common.version')}</span>
         </div>
         
         <div className="text-center text-[9px] text-neutral-600 tracking-widest leading-relaxed max-w-xl font-light">
-          NO RISK <span className="text-white/10 px-1">|</span> NO DEPOSIT <span className="text-white/10 px-1">|</span> PURE COGNITIVE REFLEX PRACTICE
+          {t('common.noRisk')}
         </div>
       </footer>
     </div>

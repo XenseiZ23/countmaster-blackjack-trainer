@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { XCircle, Plus, Minus, RotateCcw } from 'lucide-react';
+import { useLanguage } from '../lib/LanguageContext';
 
 interface FeedbackPanelProps {
   show: boolean;
@@ -24,11 +25,15 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
   verifyCount,
   continueAfterError
 }) => {
+  const { t, language } = useLanguage();
+
   return (
     <div className="max-w-sm w-full bg-neutral-900 border border-white/10 p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col gap-4 sm:gap-6">
       <div className="text-center">
-        <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 uppercase tracking-tight">RUNNING COUNT</h2>
-        <p className="text-neutral-400 text-[10px] sm:text-sm">Keep counting hand by hand.</p>
+        <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 uppercase tracking-tight">{t('howToCount.runningCountLabel').toUpperCase().replace(':', '')}</h2>
+        <p className="text-neutral-400 text-[10px] sm:text-sm">
+          {language === 'es' ? 'Sigue contando mano por mano.' : 'Keep counting hand by hand.'}
+        </p>
       </div>
 
       {!show ? (
@@ -78,7 +83,7 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
             onClick={(e) => verifyCount(e)}
             className="w-full py-4 sm:py-5 bg-[#10b981] hover:bg-[#059669] text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base uppercase tracking-wider transition-all shadow-lg active:scale-[0.98]"
           >
-            Verify Count
+            {t('trainer.submitButton')}
           </button>
         </>
       ) : (
@@ -87,16 +92,18 @@ export const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
             <XCircle size={36} className="text-red-500 sm:w-12 sm:h-12" />
           </div>
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-black text-red-500 uppercase tracking-tighter italic">FAILED</p>
+            <p className="text-2xl sm:text-3xl font-black text-red-500 uppercase tracking-tighter italic">
+              {language === 'es' ? 'FALLIDO' : 'FAILED'}
+            </p>
             <p className="text-neutral-400 text-xs sm:text-sm mt-2 font-medium">
-              The running count is <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{runningCount}</span>
+              {language === 'es' ? 'El conteo corriente es ' : 'The running count is '} <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{runningCount}</span>
             </p>
           </div>
           <button 
             onClick={continueAfterError}
             className="w-full py-4 sm:py-5 bg-gradient-to-br from-[#2a2a2a] to-[#141414] hover:from-[#3a3a3a] hover:to-[#222222] border border-white/15 text-white rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] flex items-center justify-center transition-all hover:scale-[1.01] active:scale-95 shadow-xl"
           >
-            <RotateCcw size={14} className="mr-2" /> Continue Training
+            <RotateCcw size={14} className="mr-2" /> {t('trainer.continueButton')}
           </button>
         </div>
       )}

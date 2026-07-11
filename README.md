@@ -1,121 +1,87 @@
-<img src="./public/hero_banner.png" alt="CountMaster Blackjack Trainer Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" referrerPolicy="no-referrer" />
+<img src="./public/hero_banner.png" alt="Blackjack Academy Banner" width="100%" style="border-radius: 12px; margin-bottom: 24px;" referrerPolicy="no-referrer" />
 
-# CountMaster Blackjack Trainer
+# Blackjack Academy
 
-CountMaster is a high-fidelity, desktop-optimized Blackjack Card Counting Simulator and Cognitive Trainer. Engineered as a professional-grade cognitive gymnasium, it allows memory athletes and serious players to hone mathematical estimation skills, card tracking speeds, and basic strategy adherence under simulated real-world casino constraints with zero monetary risk.
-
----
-
-##  Core Design Philosophy
-
-*   **Zero-Noise Interface:** Focused strictly on sensory training. No advertisements, no transactional clutter, and no visual-distraction layers.
-*   **Aesthetic Fidelity:** Dark-felt radial emerald gradients simulate a premium, high-stakes physical room environment.
-*   **Hardware Accelerated:** Fluid dealing animations and responsive layout transitions powered by **Framer Motion**.
-*   **Offline-Ready Precision:** Relies on local memory constructs and highly responsive state-propagation models so you can train latency-free.
+Blackjack Academy is a professional-grade, high-fidelity cognitive training simulator designed to sharpen card counting accuracy, mental processing speeds, and basic playing strategy under realistic casino conditions. Engineered as an interactive laboratory, this desktop-optimized application allows memory athletes and serious players to refine mathematical systems and decision-making skills with zero monetary risk.
 
 ---
 
-##  Main Capabilities
+## Core Training Methodology
 
-### 1. Advanced Simulation Modes
-*   **Standard Mode (Infinite Shoe):** Continuous randomized card distribution. Focuses purely on long-term endurance, instant reflex-checking, and raw numerical retention.
-*   **Advanced Mode (Shoe Penetration):** Uses fixed physical shoes (configurable up to 8 decks) with live card-penetration tracking inside a visual **Discard Tray**. Once deck depletion limit is crossed, reshuffling is enforced, mimicking land-based casino mechanics.
+Unlike traditional casino games, Blackjack Academy is built from the ground up as an educational gymnasium. The application separates raw card counting training from tactical decision-making to build clean muscle memory and minimize cognitive overload.
 
-### 2. Live Automated Environment
-*   **Configurable Multi-Seat Actions:** Support for up to 5 simulated players seated at the table playing alongside you. Automated bots execute flawless basic strategy real-time.
-*   **Dynamic Dealing Intervals:** Configurable dealing speed limits (from slow deliberate practice to high-speed reflex drills) to calibrate mathematical capture thresholds.
-*   **True-Count Drill Inputs:** Interactive popovers halt play rounds to test your accumulated running count. Provides instant mathematical grading and tracking diagnostics.
+### Trainer Mode (Speed and Accuracy Drills)
+Trainer Mode is a focused, high-repetition drill engine designed to train visual reflexes and counting automaticity.
+* **Speed Customization:** Users can configure auto-dealing timers from relaxed paces to hyper-speed dealing rates to continually push their limits.
+* **Count Memory Testing:** After a designated series of cards or shoe penetration, the engine challenges your accumulated mental running count, providing instant accuracy grading.
+* **Minimalist Interface:** Zero gameplay options (no hits, stands, or bets) are active in this mode, allowing complete concentration on Hi-Lo identification.
 
----
-
-##  Mathematical Core: The Hi-Lo Strategy
-
-CountMaster operates using the **Hi-Lo system**—the globally recognized system for card estimation. Every single card passing across the felt holds a assigned count-value:
-
-| Card Rank | Category | Count-Value | Impact on Edge |
-| :--- | :--- | :---: | :--- |
-| **2, 3, 4, 5, 6** | Low Cards | **+1** | Increases player advantage when removed from deck |
-| **7, 8, 9** | Neutral Cards | **0** | No impact on mathematical advantage |
-| **10, J, Q, K, A** | High Cards | **-1** | Decreases player advantage when removed from deck |
-
-### Mathematical Concepts Applied:
-*   **Running Count:** The ongoing sum of the values of all cards that have been dealt since the last shuffle.
-*   **Discard Deck Estimation:** Users must observe deck penetration inside the discard tray to correctly convert their *Running Count* into a *True Count* (Crucial for multi-deck shoes).
+### Casino Mode (Simultaneous Action Integration)
+Casino Mode simulates a full, realistic game table where the player must coordinate several complex mental tasks at once.
+* **Basic Strategy Verification:** The system evaluates every action (Hit, Stand, Double Down, Split, or Surrender) against mathematically optimal strategy charts and highlights errors instantly.
+* **Fictional Wagering:** Players practice sizing bets dynamically based on the True Count to manage a virtual bankroll, preparing them for physical advantage-play logistics.
+* **Complex Scenarios:** The engine specifically serves high-difficulty hands, such as soft totals and pairs, where counting errors are statistically most common.
 
 ---
 
-##  Stack & Architecture
+## The Hi-Lo Counting System
 
-CountMaster is built utilizing professional-grade, modern front-end technologies focusing on high performance and responsive render pipelines:
+The simulation utilizes the **Hi-Lo system**, the globally accepted industry-standard method for card tracking. Each rank in the deck is assigned a strategic value:
 
-*   **Runtime Framework:** [React 19](https://react.dev/) (Functional Components & Hooks)
-*   **Language Syntax:** [TypeScript](https://www.typescriptlang.org/) (Strict Type-Definitions & Static Checking)
-*   **Bundling/Hot-Reload Engine:** [Vite](https://vite.dev/)
-*   **Styling Engine:** [Tailwind CSS](https://tailwindcss.com/)
-*   **Animation Orchestration:** [Framer Motion](https://www.framer.com/motion/)
-*   **Vector Icon System:** [Lucide React](https://lucide.dev/)
+| Card Rank | Value | Impact on Player Edge |
+| :--- | :---: | :--- |
+| **2, 3, 4, 5, 6** | **+1** | Low cards. Their removal from the shoe increases player advantage. |
+| **7, 8, 9** | **0** | Neutral cards. Their removal does not alter the mathematical house edge. |
+| **10, Jack, Queen, King, Ace** | **-1** | High cards. Their removal from the shoe decreases player advantage. |
 
----
-
-##  Local Installation & Development
-
-To clone, test, and run CountMaster inside your local development sandbox:
-
-### Prerequisites
-*   Node.js (v18.0 or higher recommended)
-*   npm or Yarn
-
-### Step-by-Step Instructions
-
-1.  **Clone down the repository directory:**
-    ```bash
-    git clone https://github.com/your-username/countmaster-blackjack-trainer.git
-    cd countmaster-blackjack-trainer
-    ```
-
-2.  **Install project dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Boot up Vite developer server:**
-    ```bash
-    npm run dev
-    ```
-    *The local test interface will be served at `http://localhost:3000` or the port allocated by your environment.*
-
-4.  **Enforce code-quality linter scans:**
-    ```bash
-    npm run lint
-    ```
-
-5.  **Compile static artifact bundles for production:**
-    ```bash
-    npm run build
-    ```
-    *Vite will produce highly compressed static files inside the `/dist` directory ready for any server host.*
+### Technical Calculations
+* **Running Count:** The ongoing algebraic sum of card values dealt since the last shuffle.
+* **True Count:** In multi-deck shoes, the Running Count is divided by the estimated remaining decks to establish the exact player advantage:
+  $$\text{True Count} = \frac{\text{Running Count}}{\text{Remaining Decks}}$$
 
 ---
 
-##  Production Deployment (Vercel Configuration)
+## Technical Specifications
 
-CountMaster is customized for zero-configuration, seamless deployment on **Vercel** or alternative cloud edge routers.
+The system architecture is engineered for low latency, high frame-rate rendering, and precise state propagation:
 
-The repository includes a standalone `vercel.json` rewrite configuration at the root of the project to cleanly support single-page-routing (`react-router-dom`) without encountering `404 Not Found` errors when refreshing paths (e.g., `/about`):
+* **Framework:** React 19 (Functional architecture with custom hooks)
+* **Language:** TypeScript (Static type safety and strict schema contracts)
+* **Build System:** Vite 6 (Highly optimized code-splitting and bundling)
+* **Styling Engine:** Tailwind CSS 4 (Custom hardware-friendly theme definitions)
+* **Animation Core:** Motion / Framer Motion (GPU-accelerated card dealings and transitions)
+* **Asset Handling:** Pre-rendered minimalist high-contrast typography and custom graphic configurations.
 
-```json
-{
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ]
-}
+---
+
+## Local Development and Deployment
+
+Follow these commands to configure, build, and test the workspace locally:
+
+### Installation
+Ensure Node.js (v18.0+) is installed, then run:
+```bash
+npm install
+```
+
+### Run Development Server
+```bash
+npm run dev
+```
+
+### Build Production Bundle
+To compile optimized static files into the `/dist` directory for deployment:
+```bash
+npm run build
+```
+
+### Code Quality Audits
+```bash
+npm run lint
 ```
 
 ---
 
-##  Educational Disclosure
+## Educational and Ethical Disclaimer
 
-This platform is developed exclusively as a **cognitive and memory-training training program**. It contains **no gambling elements, no currency conversions, and no actual risk models**. CountMaster does not encourage, facilitate, or endorse real-money casino gaming. Memory training and basic strategy adherence are mathematical constructs and do not guarantee profits or eliminate the house edge in live land-based casinos. Play wisely.
+Blackjack Academy is an educational resource intended purely for memory exercises, scientific calculation, and cognitive study. The platform features no real-money gambling, virtual currency purchases, or financial transactions. Blackjack Academy does not encourage, facilitate, or endorse real-money casino play. Card counting and basic strategy are mathematical concepts; they do not guarantee winning outcomes or alter the underlying risk parameters of land-based casino gambling.

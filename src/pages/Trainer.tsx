@@ -10,9 +10,11 @@ import { HandView } from '../components/HandView';
 import { DealerHandView } from '../components/DealerHandView';
 import { GameOverlays } from '../components/GameOverlays';
 import SupercellSplash from '../components/SupercellSplash';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function Trainer() {
   const navigate = useNavigate();
+  const { t, language, setLanguage } = useLanguage();
   const [showSplash, setShowSplash] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -27,8 +29,8 @@ export default function Trainer() {
   }, []);
 
   useEffect(() => {
-    document.title = 'Blackjack Card Counter';
-  }, []);
+    document.title = language === 'es' ? 'Contador de Cartas de Blackjack' : 'Blackjack Card Counter';
+  }, [language]);
 
   const [deck, setDeck] = useState<Card[]>([]);
   const [playerHands, setPlayerHands] = useState<Hand[]>([]);
@@ -331,7 +333,7 @@ export default function Trainer() {
       // Start next round directly without flickering to 'idle'
       startRound();
     } else {
-      setFeedback({ show: true, correct: false, message: `Incorrect. The running count is ${runningCount}.` });
+      setFeedback({ show: true, correct: false, message: language === 'es' ? `Incorrecto. El conteo corriente es ${runningCount}.` : `Incorrect. The running count is ${runningCount}.` });
     }
   };
 
@@ -449,19 +451,19 @@ export default function Trainer() {
               {/* Text on Paths */}
               <text className="font-sans font-black tracking-[0.3em] uppercase text-[15px] fill-amber-400">
                 <textPath href="#payout-text-arc" startOffset="50%" textAnchor="middle">
-                  Blackjack Pays 3 To 2
+                  {t('trainer.payoutLabel')}
                 </textPath>
               </text>
 
               <text className="font-sans font-bold tracking-[0.18em] uppercase text-[9px] fill-white/70">
                 <textPath href="#rules-text-arc" startOffset="50%" textAnchor="middle">
-                  Dealer must draw to 16 and stand on all 17s
+                  {t('trainer.dealerRule')}
                 </textPath>
               </text>
 
               <text className="font-sans font-extrabold tracking-[0.25em] uppercase text-[10px] fill-neutral-900">
                 <textPath href="#insurance-text-arc" startOffset="50%" textAnchor="middle">
-                  Insurance Pays 2 To 1
+                  {t('trainer.insuranceLabel')}
                 </textPath>
               </text>
 
@@ -540,11 +542,31 @@ export default function Trainer() {
         />
       </main>
 
+      {/* Bottom-Left Language Switcher (Outside, resting flush on top of the footer) */}
+      <div className="relative z-20 w-full px-4 sm:px-6 pt-0 pb-0 flex justify-start items-center select-none shrink-0">
+        <div className="flex items-center gap-2 border-b-2 border-transparent pb-1 translate-y-[1px]">
+          <button
+            onClick={() => setLanguage('en')}
+            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'en' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
+            title="English"
+          >
+            🇺🇸
+          </button>
+          <button
+            onClick={() => setLanguage('es')}
+            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'es' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
+            title="Español"
+          >
+            🇪🇸
+          </button>
+        </div>
+      </div>
+
       {/* Footer Info */}
-      <footer className="p-3 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">
+      <footer className="py-2.5 px-4 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex gap-4">
-            <span>CARD COUNTING SYSTEM</span>
+            <span>{t('trainer.systemTitle')}</span>
             <span className="text-[#10b981]">2-6 (+1)</span>
             <span className="text-neutral-400">7-9 (0)</span>
             <span className="text-red-500">10-A (-1)</span>
@@ -553,7 +575,7 @@ export default function Trainer() {
         
         <div className="flex items-center gap-4 select-none font-bold">
           <span className="text-[9px] text-neutral-500 font-medium font-sans">
-            MODE <span className="text-white/20 px-1">|</span> <span className={gameMode === 'advanced' ? 'text-emerald-400 font-black' : 'text-neutral-300 font-black'}>{gameMode.toUpperCase()}</span>
+            {t('trainer.systemMode')} <span className="text-white/20 px-1">|</span> <span className={gameMode === 'advanced' ? 'text-emerald-400 font-black' : 'text-neutral-300 font-black'}>{gameMode.toUpperCase()}</span>
           </span>
         </div>
       </footer>
@@ -566,9 +588,9 @@ export default function Trainer() {
               <ArrowLeft size={32} className="stroke-[2.5]" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">Are you sure you want to leave?</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">{t('trainer.exitTitle')}</h3>
               <p className="text-sm text-neutral-400">
-                If you leave now, you will lose your current training session progress.
+                {t('trainer.exitDesc')}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
@@ -579,7 +601,7 @@ export default function Trainer() {
                 }}
                 className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-bold text-xs uppercase tracking-widest transition-colors text-white"
               >
-                No, Keep Training
+                {t('trainer.exitNo')}
               </button>
               <button
                 onClick={() => {
@@ -587,7 +609,7 @@ export default function Trainer() {
                 }}
                 className="flex-1 py-3.5 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-bold text-xs uppercase tracking-widest transition-colors shadow-lg shadow-red-950/50"
               >
-                Yes, Exit
+                {t('trainer.exitYes')}
               </button>
             </div>
           </div>
