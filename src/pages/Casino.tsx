@@ -59,7 +59,7 @@ export default function Casino() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
         >
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-sport font-[800] italic tracking-tight uppercase leading-none text-white select-none text-stroke-black-md">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-sport font-[800] italic tracking-tight uppercase leading-none text-white select-none text-depth-sport">
             {t('casino.coming')} <span className="text-amber-400">{t('casino.soon')}</span>
           </h1>
           

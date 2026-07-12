@@ -55,7 +55,7 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
         >
-          <h1 className="text-4xl sm:text-5xl font-sport font-[800] italic tracking-tight text-white uppercase text-stroke-black-md">
+          <h1 className="text-4xl sm:text-5xl font-sport font-[800] italic tracking-tight text-white uppercase text-depth-sport">
             {t('about.title')}
           </h1>
           <p className="text-neutral-400 font-medium text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">

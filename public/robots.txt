@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://countmaster-blackjack-trainer.vercel.app/sitemap.xml
+Sitemap: https://blackjack-card-counter-trainer.vercel.app/sitemap.xml

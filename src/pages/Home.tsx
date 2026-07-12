@@ -147,7 +147,7 @@ export default function Home() {
             </button>
             <span className="text-white/10 select-none font-light">|</span>
             <a 
-              href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" 
+              href="https://github.com/XenseiZ23/blackjack-card-counter-trainer" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="hover:text-emerald-300 hover:scale-105 active:scale-95 transition-all duration-200 py-1"
@@ -168,7 +168,7 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-5 max-w-3xl flex flex-col items-center"
         >
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sport font-[800] italic tracking-tight uppercase leading-[0.95] select-none max-w-4xl px-2 text-stroke-black-md">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sport font-[800] italic tracking-tight uppercase leading-[0.95] select-none max-w-4xl px-2 text-depth-sport">
             <span className="text-white">BLACKJACK</span> <span className="text-neutral-400">CARD</span>
             <br />
             <span className="text-neutral-400">COUNTER</span> <span className="text-emerald-600">TRAINER</span>

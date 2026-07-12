@@ -1,14 +1,14 @@
-<img src="./public/hero_banner.png" alt="Blackjack Academy Banner" width="100%" style="border-radius: 12px; margin-bottom: 24px;" referrerPolicy="no-referrer" />
+<img src="./public/hero_banner.jpg" alt="Blackjack Card Counter Trainer Banner" width="100%" style="border-radius: 12px; margin-bottom: 24px;" referrerPolicy="no-referrer" />
 
-# Blackjack Academy
+# Blackjack Card Counter Trainer
 
-Blackjack Academy is a professional-grade, high-fidelity cognitive training simulator designed to sharpen card counting accuracy, mental processing speeds, and basic playing strategy under realistic casino conditions. Engineered as an interactive laboratory, this desktop-optimized application allows memory athletes and serious players to refine mathematical systems and decision-making skills with zero monetary risk.
+Blackjack Card Counter Trainer is a professional-grade, high-fidelity cognitive training simulator designed to sharpen card counting accuracy, mental processing speeds, and basic playing strategy under realistic casino conditions. Engineered as an interactive laboratory, this desktop-optimized application allows memory athletes and serious players to refine mathematical systems and decision-making skills with zero monetary risk.
 
 ---
 
 ## Core Training Methodology
 
-Unlike traditional casino games, Blackjack Academy is built from the ground up as an educational gymnasium. The application separates raw card counting training from tactical decision-making to build clean muscle memory and minimize cognitive overload.
+Unlike traditional casino games, Blackjack Card Counter Trainer is built from the ground up as an educational gymnasium. The application separates raw card counting training from tactical decision-making to build clean muscle memory and minimize cognitive overload.
 
 ### Trainer Mode (Speed and Accuracy Drills)
 Trainer Mode is a focused, high-repetition drill engine designed to train visual reflexes and counting automaticity.
@@ -84,4 +84,4 @@ npm run lint
 
 ## Educational and Ethical Disclaimer
 
-Blackjack Academy is an educational resource intended purely for memory exercises, scientific calculation, and cognitive study. The platform features no real-money gambling, virtual currency purchases, or financial transactions. Blackjack Academy does not encourage, facilitate, or endorse real-money casino play. Card counting and basic strategy are mathematical concepts; they do not guarantee winning outcomes or alter the underlying risk parameters of land-based casino gambling.
+Blackjack Card Counter Trainer is an educational resource intended purely for memory exercises, scientific calculation, and cognitive study. The platform features no real-money gambling, virtual currency purchases, or financial transactions. Blackjack Card Counter Trainer does not encourage, facilitate, or endorse real-money casino play. Card counting and basic strategy are mathematical concepts; they do not guarantee winning outcomes or alter the underlying risk parameters of land-based casino gambling.
