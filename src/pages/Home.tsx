@@ -147,7 +147,7 @@ export default function Home() {
             </button>
             <span className="text-white/10 select-none font-light">|</span>
             <a 
-              href="https://github.com/XenseiZ23/blackjack-card-counter-trainer" 
+              href="https://github.com/XenseiZ23/countmaster-blackjack-trainer" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="hover:text-emerald-300 hover:scale-105 active:scale-95 transition-all duration-200 py-1"
