@@ -423,7 +423,7 @@ export default function Trainer() {
       {/* Main Table */}
       <main className="flex-1 relative flex flex-col items-center justify-between p-2 sm:p-4 pb-12 sm:pb-4 overflow-hidden isolate">
         {/* Table Felt with Elegant Ambient Glowing Orbs */}
-        <div className={`absolute inset-0 z-0 bg-[linear-gradient(to_right,_#062213_0%,_#0c4226_20%,_#14532d_40%,_#166534_50%,_#14532d_60%,_#0c4226_80%,_#062213_100%)] overflow-hidden transition-all duration-300 ${isPaused ? 'brightness-[0.18]' : 'brightness-100'}`}>
+        <div className={`absolute inset-0 z-0 bg-[linear-gradient(to_right,_#062213_0%,_#0c4226_20%,_#14532d_40%,_#166534_50%,_#14532d_60%,_#0c4226_80%,_#062213_100%)] overflow-hidden transition-all duration-300 ${isPaused ? 'brightness-[0.18]' : 'brightness-75'}`}>
           {/* Organic Ambient Glowing Orbs on the Live Table */}
           <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] max-w-[650px] rounded-full bg-emerald-500/[0.10] blur-[120px] pointer-events-none animate-[pulse_9s_ease-in-out_infinite]" />
           <div className="absolute bottom-[10%] -right-[10%] w-[50vw] h-[50vw] max-w-[550px] rounded-full bg-emerald-600/[0.08] blur-[110px] pointer-events-none animate-[pulse_11s_ease-in-out_infinite_1.5s]" />

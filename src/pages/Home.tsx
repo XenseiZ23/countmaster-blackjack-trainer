@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col justify-between overflow-x-hidden transform-gpu relative">
       {/* Classic Casino Green Felt Backdrop with Elegant Degradation */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,_#062213_0%,_#0c4226_20%,_#14532d_40%,_#166534_50%,_#14532d_60%,_#0c4226_80%,_#062213_100%)] overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,_#062213_0%,_#0c4226_20%,_#14532d_40%,_#166534_50%,_#14532d_60%,_#0c4226_80%,_#062213_100%)] overflow-hidden brightness-75">
         {/* Felt Texture pattern */}
         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')] mix-blend-overlay pointer-events-none" />
         
@@ -174,7 +174,7 @@ export default function Home() {
             <span className="text-neutral-400">COUNTER</span> <span className="text-emerald-600">TRAINER</span>
           </h1>
           
-          <p className="text-neutral-400 font-normal text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="text-neutral-300 font-normal text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-4">
             {t('home.subtitle')}
           </p>
         </motion.div>

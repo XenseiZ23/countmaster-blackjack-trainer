@@ -21,7 +21,8 @@ const translations: Record<Language, Record<string, any>> = {
     home: {
       title: "BLACKJACK CARD COUNTER",
       trainer: "TRAINER",
-      subtitle: "Hone card counting speed, test your math conversions, and build strategy reflexes to gain an advantage in blackjack using memory simulator tools built for mathematical edge.",
+      heroTitle: "Practice Blackjack Card Counting Online",
+      subtitle: "Free browser-based trainer supporting Hi-Lo practice, True Count drills and realistic casino shoe simulations.",
       countTrainerTitle: "COUNT TRAINER",
       countTrainerDesc: "Fast-paced card counting drills focused on running count accuracy, deck estimation conversions, and custom table speed calibration.",
       bullet1: "Running & True Counts",
@@ -181,7 +182,8 @@ const translations: Record<Language, Record<string, any>> = {
     home: {
       title: "BLACKJACK CARD COUNTER",
       trainer: "TRAINER",
-      subtitle: "Perfecciona tu velocidad de conteo, pon a prueba tus conversiones matemáticas y desarrolla reflejos estratégicos para obtener una ventaja en el blackjack utilizando simuladores de memoria.",
+      heroTitle: "Practica el Conteo de Cartas de Blackjack en Línea",
+      subtitle: "Entrenador web gratuito con práctica de Hi-Lo, simulaciones reales de zapatos de casino y ejercicios de conteo real.",
       countTrainerTitle: "ENTRENADOR DE CONTEO",
       countTrainerDesc: "Ejercicios de conteo de cartas de ritmo rápido enfocados en precisión del conteo real, conversiones de estimación de barajas y calibración de velocidad.",
       bullet1: "Conteo Corriente y Real",

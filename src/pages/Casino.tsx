@@ -15,7 +15,7 @@ export default function Casino() {
   return (
     <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col justify-between overflow-x-hidden transform-gpu relative">
       {/* Classic Casino Green Felt Backdrop */}
-      <div className="absolute inset-0 z-0 bg-[#143d26] overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[#143d26] overflow-hidden brightness-75">
         {/* Felt Texture pattern */}
         <div className="absolute inset-0 opacity-25 bg-[url('https://www.transparenttextures.com/patterns/felt.png')] mix-blend-overlay pointer-events-none" />
       </div>
