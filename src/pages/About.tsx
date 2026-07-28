@@ -6,7 +6,7 @@ import { AcademyLogo } from '../components/AcademyLogo';
 import { useLanguage } from '../lib/LanguageContext';
 
 export default function About() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white font-sans flex flex-col justify-between overflow-x-hidden transform-gpu relative">
@@ -146,26 +146,6 @@ export default function About() {
         </div>
 
       </main>
-
-      {/* Bottom-Left Language Switcher (Outside, resting flush on top of the footer) */}
-      <div className="relative z-20 w-full max-w-6xl mx-auto px-5 sm:px-8 pt-0 pb-0 flex justify-start items-center select-none">
-        <div className="flex items-center gap-2 border-b-2 border-transparent pb-1.5 translate-y-[2px]">
-          <button
-            onClick={() => setLanguage('en')}
-            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'en' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
-            title="English"
-          >
-            🇺🇸
-          </button>
-          <button
-            onClick={() => setLanguage('es')}
-            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'es' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
-            title="Español"
-          >
-            🇪🇸
-          </button>
-        </div>
-      </div>
 
       {/* Footer Info */}
       <footer className="relative z-10 w-full bg-black/80 border-t border-white/5 py-4 px-5 sm:px-8 flex flex-col items-center justify-center gap-3 text-[10px] tracking-wider select-none shrink-0">

@@ -14,7 +14,7 @@ import { useLanguage } from '../lib/LanguageContext';
 
 export default function Trainer() {
   const navigate = useNavigate();
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const [showSplash, setShowSplash] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -541,26 +541,6 @@ export default function Trainer() {
           continueAfterError={continueAfterError}
         />
       </main>
-
-      {/* Bottom-Left Language Switcher (Outside, resting flush on top of the footer) */}
-      <div className="relative z-20 w-full px-4 sm:px-6 pt-0 pb-0 flex justify-start items-center select-none shrink-0">
-        <div className="flex items-center gap-2 border-b-2 border-transparent pb-1 translate-y-[1px]">
-          <button
-            onClick={() => setLanguage('en')}
-            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'en' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
-            title="English"
-          >
-            🇺🇸
-          </button>
-          <button
-            onClick={() => setLanguage('es')}
-            className={`w-5 h-5 flex items-center justify-center text-xs sm:text-sm transition-all duration-300 hover:scale-125 active:scale-95 cursor-pointer outline-none ${language === 'es' ? 'opacity-100 scale-110 filter drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'opacity-40 hover:opacity-100'}`}
-            title="Español"
-          >
-            🇪🇸
-          </button>
-        </div>
-      </div>
 
       {/* Footer Info */}
       <footer className="py-2.5 px-4 bg-black/60 border-t border-white/5 text-[10px] uppercase tracking-wider text-neutral-500 flex justify-between items-center shrink-0">

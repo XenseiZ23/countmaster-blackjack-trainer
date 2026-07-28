@@ -216,17 +216,17 @@ export default function Home() {
                 </div>
 
                 {/* Bullets */}
-                <ul className="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-1.5 text-[10px] text-neutral-500 font-bold select-none uppercase tracking-wider">
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {t('home.bullet1')}</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {t('home.bullet2')}</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {t('home.bullet3')}</li>
+                <ul className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-start gap-2 sm:gap-x-5 sm:gap-y-1.5 text-[10px] text-neutral-500 font-bold select-none uppercase tracking-wider w-fit mx-auto md:mx-0">
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" /> {t('home.bullet1')}</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" /> {t('home.bullet2')}</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" /> {t('home.bullet3')}</li>
                 </ul>
               </div>
 
               <div className="shrink-0 flex justify-center w-full md:w-auto">
                 <Link
                   to="/trainer"
-                  className="w-full sm:w-auto text-center inline-flex justify-center py-4 px-8 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 group-hover:scale-[1.03] active:scale-95 items-center gap-2 shadow-sm"
+                  className="w-full sm:w-auto text-center inline-flex justify-center py-4 px-8 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 border border-emerald-500/40 hover:border-emerald-400 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 group-hover:scale-[1.02] active:scale-95 items-center gap-2 backdrop-blur-sm shadow-sm"
                 >
                   {t('home.launchTrainer')} <Play fill="currentColor" size={10} />
                 </Link>
@@ -264,17 +264,17 @@ export default function Home() {
                 </div>
 
                 {/* Bullets */}
-                <ul className="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-1.5 text-[10px] text-neutral-500 font-bold select-none uppercase tracking-wider">
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {t('home.bulletC1')}</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {t('home.bulletC2')}</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {t('home.bulletC3')}</li>
+                <ul className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-start gap-2 sm:gap-x-5 sm:gap-y-1.5 text-[10px] text-neutral-500 font-bold select-none uppercase tracking-wider w-fit mx-auto md:mx-0">
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" /> {t('home.bulletC1')}</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" /> {t('home.bulletC2')}</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" /> {t('home.bulletC3')}</li>
                 </ul>
               </div>
 
               <div className="shrink-0 flex justify-center w-full md:w-auto">
                 <Link
                   to="/casino"
-                  className="w-full sm:w-auto text-center inline-flex justify-center py-4 px-8 bg-amber-500/5 hover:bg-amber-500/15 text-amber-300 hover:text-amber-200 border border-amber-500/20 hover:border-amber-500/40 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 group-hover:scale-[1.03] active:scale-95 items-center gap-2 shadow-sm"
+                  className="w-full sm:w-auto text-center inline-flex justify-center py-4 px-8 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 hover:text-amber-200 border border-amber-500/35 hover:border-amber-400/60 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 group-hover:scale-[1.02] active:scale-95 items-center gap-2 backdrop-blur-sm shadow-sm"
                 >
                   {t('home.comingSoon')} <ChevronRight size={12} />
                 </Link>
